@@ -15,6 +15,8 @@
 		BD7F2DFA21C13AB8000F438A /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2DF921C13AB8000F438A /* Shaders.metal */; };
 		BD7F2E0421C22BA2000F438A /* abc.png in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E0321C22BA2000F438A /* abc.png */; };
 		BD7F2E0621C23B89000F438A /* 31.png in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E0521C23B89000F438A /* 31.png */; };
+		BD7F2E0E21C249EA000F438A /* QGHWDMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */; };
+		BD7F2E1021C24E4A000F438A /* QGHWDMetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E0F21C24E4A000F438A /* QGHWDMetalRenderer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		BD7F2E0221C21948000F438A /* QGHWDShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QGHWDShaderTypes.h; sourceTree = "<group>"; };
 		BD7F2E0321C22BA2000F438A /* abc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = abc.png; sourceTree = "<group>"; };
 		BD7F2E0521C23B89000F438A /* 31.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 31.png; sourceTree = "<group>"; };
+		BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGHWDMetalView.swift; sourceTree = "<group>"; };
+		BD7F2E0F21C24E4A000F438A /* QGHWDMetalRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGHWDMetalRenderer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +75,8 @@
 				BD7F2DF321C13782000F438A /* Info.plist */,
 				BD7F2DF921C13AB8000F438A /* Shaders.metal */,
 				BD7F2E0221C21948000F438A /* QGHWDShaderTypes.h */,
+				BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */,
+				BD7F2E0F21C24E4A000F438A /* QGHWDMetalRenderer.swift */,
 			);
 			path = MetalTest;
 			sourceTree = "<group>";
@@ -148,8 +154,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD7F2E0E21C249EA000F438A /* QGHWDMetalView.swift in Sources */,
 				BD7F2DFA21C13AB8000F438A /* Shaders.metal in Sources */,
 				BD7F2DEA21C1377F000F438A /* ViewController.swift in Sources */,
+				BD7F2E1021C24E4A000F438A /* QGHWDMetalRenderer.swift in Sources */,
 				BD7F2DE821C1377F000F438A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
