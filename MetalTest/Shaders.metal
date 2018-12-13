@@ -14,7 +14,8 @@ using namespace metal;
 typedef struct {
     
     float4 clipSpacePostion [[ position ]];
-    float2 textureCoordinate;
+    float2 textureColorCoordinate;
+    float2 textureAlphaCoordinate;
 } RasterizerData;
 
 vertex float4 basic_vertex(const device packed_float3* vertex_array [[ buffer(0) ]], unsigned int vid [[ vertex_id ]]) {
@@ -29,13 +30,14 @@ vertex RasterizerData hwd_vertexShader(uint vertexID [[ vertex_id ]], constant Q
     
     RasterizerData out;
     out.clipSpacePostion = vertexArray[vertexID].position;
-    out.textureCoordinate = vertexArray[vertexID].textureCoordinate;
+    out.textureColorCoordinate = vertexArray[vertexID].textureColorCoordinate;
+    out.textureAlphaCoordinate = vertexArray[vertexID].textureAlphaCoordinate;
     return out;
 }
 
 fragment float4 hwd_fragmentShader(RasterizerData input [[ stage_in ]], texture2d<half> colorTexture [[ texture(0)]]) {
     
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-    half4 colorSample = colorTexture.sample(textureSampler, input.textureCoordinate);
+    half4 colorSample = colorTexture.sample(textureSampler, input.textureAlphaCoordinate);
     return float4(colorSample);
 }

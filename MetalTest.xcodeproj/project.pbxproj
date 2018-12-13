@@ -14,6 +14,7 @@
 		BD7F2DF221C13782000F438A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2DF021C13782000F438A /* LaunchScreen.storyboard */; };
 		BD7F2DFA21C13AB8000F438A /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2DF921C13AB8000F438A /* Shaders.metal */; };
 		BD7F2E0421C22BA2000F438A /* abc.png in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E0321C22BA2000F438A /* abc.png */; };
+		BD7F2E0621C23B89000F438A /* 31.png in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E0521C23B89000F438A /* 31.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		BD7F2DF921C13AB8000F438A /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		BD7F2E0221C21948000F438A /* QGHWDShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QGHWDShaderTypes.h; sourceTree = "<group>"; };
 		BD7F2E0321C22BA2000F438A /* abc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = abc.png; sourceTree = "<group>"; };
+		BD7F2E0521C23B89000F438A /* 31.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 31.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 		BD7F2DE621C1377F000F438A /* MetalTest */ = {
 			isa = PBXGroup;
 			children = (
+				BD7F2E0521C23B89000F438A /* 31.png */,
 				BD7F2E0321C22BA2000F438A /* abc.png */,
 				BD7F2DE721C1377F000F438A /* AppDelegate.swift */,
 				BD7F2DE921C1377F000F438A /* ViewController.swift */,
@@ -130,6 +133,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD7F2E0621C23B89000F438A /* 31.png in Resources */,
 				BD7F2E0421C22BA2000F438A /* abc.png in Resources */,
 				BD7F2DF221C13782000F438A /* LaunchScreen.storyboard in Resources */,
 				BD7F2DEF21C13782000F438A /* Assets.xcassets in Resources */,

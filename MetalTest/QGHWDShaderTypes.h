@@ -13,8 +13,9 @@
 
 typedef struct {
     
-    vector_float4 position;
-    vector_float2 textureCoordinate;
+    packed_float4 position;
+    packed_float2 textureColorCoordinate;
+    packed_float2 textureAlphaCoordinate;
 } QGHWDVertex;
 
 #endif /* QGHWDShaderTypes_h */

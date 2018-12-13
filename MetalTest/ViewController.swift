@@ -12,26 +12,14 @@ import MetalKit
 
 class ViewController: UIViewController {
 
-    let quadVertices: [QGHWDVertex] = [
-        
-        QGHWDVertex(position: vector_float4(0.5, -0.5, 0.0, 1.0), textureCoordinate: vector_float2(1.0, 0.0)),
-        QGHWDVertex(position: vector_float4(-0.5, -0.5, 0.0, 1.0), textureCoordinate: vector_float2(0.0, 0.0)),
-        QGHWDVertex(position: vector_float4(-0.5, 0.5, 0.0, 1.0), textureCoordinate: vector_float2(0.0, 1.0)),
-        QGHWDVertex(position: vector_float4(0.5, -0.5, 0.0, 1.0), textureCoordinate: vector_float2(1.0, 0.0)),
-        QGHWDVertex(position: vector_float4(-0.5, 0.5, 0.0, 1.0), textureCoordinate: vector_float2(0.0, 1.0)),
-        QGHWDVertex(position: vector_float4(0.5, 0.5, 0.0, 1.0), textureCoordinate: vector_float2(1.0, 1.0)),
-        /*0.5, -0.5, 0.0, 1.0, 1.0, 1.0,
-        -0.5, -0.5, 0.0, 1.0, 0.0, 1.0,
-        -0.5, 0.5, 0.0, 1.0, 0.0, 0.0,
-        0.5, -0.5, 0.0, 1.0, 1.0, 1.0,
-        -0.5, 0.5, 0.0, 1.0, 0.0, 0.0,
-        0.5, 0.5, 0.0, 1.0, 1.0, 0.0*/
-    ]
-    
-    let vertexData: [Float] = [
-        0.0, 1.0, 0.0,
-        -1.0, -1.0, 0.0,
-        1.0, -1.0, 0.0
+    //QGHWDVertex
+    let quadVertices: [Float] = [
+        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
+        -1.0, -1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
+        -1.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0, 1.0,
+        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
+        -1.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
+        1.0, 1.0, 0.0, 1.0, 1, 1.0, 0.5, 1.0
     ]
     
     var device: MTLDevice!
@@ -39,9 +27,7 @@ class ViewController: UIViewController {
     var vertexBuffer: MTLBuffer!
     var pipelineState: MTLRenderPipelineState! //This will keep track of the compiled render pipeline you’re about to create.
     var commandQueue: MTLCommandQueue!
-    var displayLink: CADisplayLink!
     var vertexCount: Int!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,12 +40,13 @@ class ViewController: UIViewController {
         metalLayer.contentsScale = UIScreen.main.scale
         metalLayer.pixelFormat = .bgra8Unorm
         metalLayer.framebufferOnly = true
-        metalLayer.frame = view.frame
+        metalLayer.frame.size = CGSize(width: 368, height: 288)
+        metalLayer.position = view.center
         view.layer.addSublayer(metalLayer)
         
         let dataSize = quadVertices.count * MemoryLayout.size(ofValue: quadVertices[0])
         vertexBuffer = device.makeBuffer(bytes: quadVertices, length: dataSize, options: [])
-        vertexCount = quadVertices.count
+        vertexCount = MemoryLayout.size(ofValue: quadVertices[0])*quadVertices.count/MemoryLayout<QGHWDVertex>.stride
         
         let defaultLibrary = device.makeDefaultLibrary()
         let fragmentProgram = defaultLibrary?.makeFunction(name: "hwd_fragmentShader")
@@ -74,11 +61,9 @@ class ViewController: UIViewController {
         
         commandQueue = device.makeCommandQueue()
         
-        displayLink = CADisplayLink(target: self, selector: #selector(gameloop))
-        displayLink.add(to: RunLoop.main, forMode: .default)
+        render()
     }
 
-    
     func render() {
         
         //metalLayer.drawableSize = CGSize(width: metalLayer.contentsScale*metalLayer.frame.size.width, height: metalLayer.contentsScale*metalLayer.frame.size.height)
@@ -93,20 +78,13 @@ class ViewController: UIViewController {
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         renderEncoder.setRenderPipelineState(pipelineState)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        guard let texture = try? self.loadTexture(imageName: "abc") else { return }
+        guard let texture = try? self.loadTexture(imageName: "31") else { return }
         renderEncoder.setFragmentTexture(texture!, index: 0)
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
         renderEncoder.endEncoding()
         
         commandBuffer.present(drawable)
         commandBuffer.commit()
-    }
-    
-    @objc func gameloop() {
-        
-        autoreleasepool{
-            self.render()
-        }
     }
     
     func loadTexture(imageName: String) throws -> MTLTexture? {
