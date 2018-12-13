@@ -18,14 +18,6 @@ typedef struct {
     float2 textureAlphaCoordinate;
 } RasterizerData;
 
-vertex float4 basic_vertex(const device packed_float3* vertex_array [[ buffer(0) ]], unsigned int vid [[ vertex_id ]]) {
-    return float4(vertex_array[vid], 1.0);
-}
-
-fragment half4 basic_fragment() {
-    return half4(1.0);
-}
-
 vertex RasterizerData hwd_vertexShader(uint vertexID [[ vertex_id ]], constant QGHWDVertex *vertexArray [[ buffer(0) ]]) {
     
     RasterizerData out;
@@ -35,9 +27,11 @@ vertex RasterizerData hwd_vertexShader(uint vertexID [[ vertex_id ]], constant Q
     return out;
 }
 
-fragment float4 hwd_fragmentShader(RasterizerData input [[ stage_in ]], texture2d<half> colorTexture [[ texture(0)]]) {
+fragment float4 hwd_fragmentShader(RasterizerData input [[ stage_in ]], texture2d<float> texture [[ texture(0)]]) {
     
-    constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-    half4 colorSample = colorTexture.sample(textureSampler, input.textureAlphaCoordinate);
-    return float4(colorSample);
+    constexpr sampler colorSampler (mag_filter::linear, min_filter::linear);
+    constexpr sampler alphaSampler (mag_filter::linear, min_filter::linear);
+    float4 colorSample = texture.sample(colorSampler, input.textureColorCoordinate);
+    float4 alphaSample = texture.sample(alphaSampler, input.textureAlphaCoordinate);
+    return float4(colorSample.rgb,alphaSample.r);
 }

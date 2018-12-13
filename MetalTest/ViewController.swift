@@ -36,7 +36,10 @@ class ViewController: UIViewController {
         device = MTLCreateSystemDefaultDevice()
     
         metalLayer = CAMetalLayer()
+        metalLayer.backgroundColor = UIColor.blue.cgColor
         metalLayer.device = device
+        //important!
+        metalLayer.isOpaque = false
         metalLayer.contentsScale = UIScreen.main.scale
         metalLayer.pixelFormat = .bgra8Unorm
         metalLayer.framebufferOnly = true
@@ -71,7 +74,7 @@ class ViewController: UIViewController {
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture //which returns the texture in which you need to draw in order for something to appear on the screen.
         renderPassDescriptor.colorAttachments[0].loadAction = .clear //“set the texture to the clear color before doing any drawing,”
-        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0.0, green: 104.0/255.0, blue: 55.0/255.0, alpha: 1.0)
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         
         let commandBuffer = commandQueue.makeCommandBuffer()!
         
