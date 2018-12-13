@@ -17,6 +17,29 @@
 		BD7F2E0621C23B89000F438A /* 31.png in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E0521C23B89000F438A /* 31.png */; };
 		BD7F2E0E21C249EA000F438A /* QGHWDMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */; };
 		BD7F2E1021C24E4A000F438A /* QGHWDMetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E0F21C24E4A000F438A /* QGHWDMetalRenderer.swift */; };
+		BD7F2E7E21C264AF000F438A /* QGMP4Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E4C21C264AE000F438A /* QGMP4Parser.m */; };
+		BD7F2E7F21C264AF000F438A /* QGSafeMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E5321C264AE000F438A /* QGSafeMutableArray.m */; };
+		BD7F2E8021C264AF000F438A /* NSNotificationCenter+ThreadSafe.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E5421C264AE000F438A /* NSNotificationCenter+ThreadSafe.m */; };
+		BD7F2E8121C264AF000F438A /* QGWeakProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E5521C264AE000F438A /* QGWeakProxy.m */; };
+		BD7F2E8221C264AF000F438A /* QGSafeMutableDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E5621C264AE000F438A /* QGSafeMutableDictionary.m */; };
+		BD7F2E8321C264AF000F438A /* QGBaseDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E5821C264AE000F438A /* QGBaseDecoder.m */; };
+		BD7F2E8421C264AF000F438A /* QGMP4FrameHWDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E5921C264AE000F438A /* QGMP4FrameHWDecoder.m */; };
+		BD7F2E8521C264AF000F438A /* QGMP4AnimatedImageFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E5B21C264AF000F438A /* QGMP4AnimatedImageFrame.m */; };
+		BD7F2E8621C264AF000F438A /* QGMP4HWDFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E5E21C264AF000F438A /* QGMP4HWDFileInfo.m */; };
+		BD7F2E8721C264AF000F438A /* QGBaseDFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E6021C264AF000F438A /* QGBaseDFileInfo.m */; };
+		BD7F2E8821C264AF000F438A /* QGBaseAnimatedImageFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E6321C264AF000F438A /* QGBaseAnimatedImageFrame.m */; };
+		BD7F2E8921C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E6421C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.m */; };
+		BD7F2E8A21C264AF000F438A /* QGAnimatedImageDecodeConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E6821C264AF000F438A /* QGAnimatedImageDecodeConfig.m */; };
+		BD7F2E8B21C264AF000F438A /* QGAnimatedImageDecodeThreadPool.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E6E21C264AF000F438A /* QGAnimatedImageDecodeThreadPool.m */; };
+		BD7F2E8C21C264AF000F438A /* QGAnimatedImageDecodeThread.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E6F21C264AF000F438A /* QGAnimatedImageDecodeThread.m */; };
+		BD7F2E8D21C264AF000F438A /* QGAnimatedImageBufferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E7021C264AF000F438A /* QGAnimatedImageBufferManager.m */; };
+		BD7F2E8E21C264AF000F438A /* QGAnimatedImageDecodeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E7121C264AF000F438A /* QGAnimatedImageDecodeManager.m */; };
+		BD7F2E8F21C264AF000F438A /* QGHWDMP4OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E7321C264AF000F438A /* QGHWDMP4OpenGLView.m */; };
+		BD7F2E9321C264AF000F438A /* UIView+MP4HWDecode.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E7C21C264AF000F438A /* UIView+MP4HWDecode.m */; };
+		BD7F2E9421C264AF000F438A /* HelloWorld.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E7D21C264AF000F438A /* HelloWorld.m */; };
+		BD7F2E9921C2657C000F438A /* test.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E9621C2657A000F438A /* test.mp4 */; };
+		BD7F2E9A21C2657C000F438A /* test.webp in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E9721C2657B000F438A /* test.webp */; };
+		BD7F2E9B21C2657C000F438A /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E9821C2657C000F438A /* test.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +56,50 @@
 		BD7F2E0521C23B89000F438A /* 31.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 31.png; sourceTree = "<group>"; };
 		BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGHWDMetalView.swift; sourceTree = "<group>"; };
 		BD7F2E0F21C24E4A000F438A /* QGHWDMetalRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGHWDMetalRenderer.swift; sourceTree = "<group>"; };
+		BD7F2E4B21C264AE000F438A /* QGMP4Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGMP4Parser.h; sourceTree = "<group>"; };
+		BD7F2E4C21C264AE000F438A /* QGMP4Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGMP4Parser.m; sourceTree = "<group>"; };
+		BD7F2E4D21C264AE000F438A /* HelloWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelloWorld.h; sourceTree = "<group>"; };
+		BD7F2E4F21C264AE000F438A /* NSNotificationCenter+ThreadSafe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+ThreadSafe.h"; sourceTree = "<group>"; };
+		BD7F2E5021C264AE000F438A /* QGSafeMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGSafeMutableArray.h; sourceTree = "<group>"; };
+		BD7F2E5121C264AE000F438A /* QGWeakProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGWeakProxy.h; sourceTree = "<group>"; };
+		BD7F2E5221C264AE000F438A /* QGSafeMutableDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGSafeMutableDictionary.h; sourceTree = "<group>"; };
+		BD7F2E5321C264AE000F438A /* QGSafeMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGSafeMutableArray.m; sourceTree = "<group>"; };
+		BD7F2E5421C264AE000F438A /* NSNotificationCenter+ThreadSafe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNotificationCenter+ThreadSafe.m"; sourceTree = "<group>"; };
+		BD7F2E5521C264AE000F438A /* QGWeakProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGWeakProxy.m; sourceTree = "<group>"; };
+		BD7F2E5621C264AE000F438A /* QGSafeMutableDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGSafeMutableDictionary.m; sourceTree = "<group>"; };
+		BD7F2E5821C264AE000F438A /* QGBaseDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGBaseDecoder.m; sourceTree = "<group>"; };
+		BD7F2E5921C264AE000F438A /* QGMP4FrameHWDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGMP4FrameHWDecoder.m; sourceTree = "<group>"; };
+		BD7F2E5B21C264AF000F438A /* QGMP4AnimatedImageFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGMP4AnimatedImageFrame.m; sourceTree = "<group>"; };
+		BD7F2E5C21C264AF000F438A /* QGBaseDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGBaseDFileInfo.h; sourceTree = "<group>"; };
+		BD7F2E5D21C264AF000F438A /* QGBaseAnimatedImageFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGBaseAnimatedImageFrame.h; sourceTree = "<group>"; };
+		BD7F2E5E21C264AF000F438A /* QGMP4HWDFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGMP4HWDFileInfo.m; sourceTree = "<group>"; };
+		BD7F2E5F21C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "QGBaseAnimatedImageFrame+Displaying.h"; sourceTree = "<group>"; };
+		BD7F2E6021C264AF000F438A /* QGBaseDFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGBaseDFileInfo.m; sourceTree = "<group>"; };
+		BD7F2E6121C264AF000F438A /* QGMP4AnimatedImageFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGMP4AnimatedImageFrame.h; sourceTree = "<group>"; };
+		BD7F2E6221C264AF000F438A /* QGMP4HWDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGMP4HWDFileInfo.h; sourceTree = "<group>"; };
+		BD7F2E6321C264AF000F438A /* QGBaseAnimatedImageFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGBaseAnimatedImageFrame.m; sourceTree = "<group>"; };
+		BD7F2E6421C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "QGBaseAnimatedImageFrame+Displaying.m"; sourceTree = "<group>"; };
+		BD7F2E6521C264AF000F438A /* QGBaseDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGBaseDecoder.h; sourceTree = "<group>"; };
+		BD7F2E6621C264AF000F438A /* QGMP4FrameHWDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGMP4FrameHWDecoder.h; sourceTree = "<group>"; };
+		BD7F2E6821C264AF000F438A /* QGAnimatedImageDecodeConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGAnimatedImageDecodeConfig.m; sourceTree = "<group>"; };
+		BD7F2E6921C264AF000F438A /* QGAnimatedImageDecodeThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGAnimatedImageDecodeThread.h; sourceTree = "<group>"; };
+		BD7F2E6A21C264AF000F438A /* QGAnimatedImageDecodeThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGAnimatedImageDecodeThreadPool.h; sourceTree = "<group>"; };
+		BD7F2E6B21C264AF000F438A /* QGAnimatedImageBufferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGAnimatedImageBufferManager.h; sourceTree = "<group>"; };
+		BD7F2E6C21C264AF000F438A /* QGAnimatedImageDecodeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGAnimatedImageDecodeManager.h; sourceTree = "<group>"; };
+		BD7F2E6D21C264AF000F438A /* QGAnimatedImageDecodeConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGAnimatedImageDecodeConfig.h; sourceTree = "<group>"; };
+		BD7F2E6E21C264AF000F438A /* QGAnimatedImageDecodeThreadPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGAnimatedImageDecodeThreadPool.m; sourceTree = "<group>"; };
+		BD7F2E6F21C264AF000F438A /* QGAnimatedImageDecodeThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGAnimatedImageDecodeThread.m; sourceTree = "<group>"; };
+		BD7F2E7021C264AF000F438A /* QGAnimatedImageBufferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGAnimatedImageBufferManager.m; sourceTree = "<group>"; };
+		BD7F2E7121C264AF000F438A /* QGAnimatedImageDecodeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGAnimatedImageDecodeManager.m; sourceTree = "<group>"; };
+		BD7F2E7321C264AF000F438A /* QGHWDMP4OpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGHWDMP4OpenGLView.m; sourceTree = "<group>"; };
+		BD7F2E7A21C264AF000F438A /* UIView+MP4HWDecode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MP4HWDecode.h"; sourceTree = "<group>"; };
+		BD7F2E7B21C264AF000F438A /* QGHWDMP4OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGHWDMP4OpenGLView.h; sourceTree = "<group>"; };
+		BD7F2E7C21C264AF000F438A /* UIView+MP4HWDecode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MP4HWDecode.m"; sourceTree = "<group>"; };
+		BD7F2E7D21C264AF000F438A /* HelloWorld.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelloWorld.m; sourceTree = "<group>"; };
+		BD7F2E9621C2657A000F438A /* test.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.mp4; sourceTree = "<group>"; };
+		BD7F2E9721C2657B000F438A /* test.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.webp; sourceTree = "<group>"; };
+		BD7F2E9821C2657C000F438A /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
+		BD7F2EA521C26A63000F438A /* MetalTest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MetalTest-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,8 +132,6 @@
 		BD7F2DE621C1377F000F438A /* MetalTest */ = {
 			isa = PBXGroup;
 			children = (
-				BD7F2E0521C23B89000F438A /* 31.png */,
-				BD7F2E0321C22BA2000F438A /* abc.png */,
 				BD7F2DE721C1377F000F438A /* AppDelegate.swift */,
 				BD7F2DE921C1377F000F438A /* ViewController.swift */,
 				BD7F2DEB21C1377F000F438A /* Main.storyboard */,
@@ -77,8 +142,118 @@
 				BD7F2E0221C21948000F438A /* QGHWDShaderTypes.h */,
 				BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */,
 				BD7F2E0F21C24E4A000F438A /* QGHWDMetalRenderer.swift */,
+				BD7F2E9521C26508000F438A /* resource */,
+				BD7F2E4921C264AE000F438A /* HWD */,
+				BD7F2EA521C26A63000F438A /* MetalTest-Bridging-Header.h */,
 			);
 			path = MetalTest;
+			sourceTree = "<group>";
+		};
+		BD7F2E4921C264AE000F438A /* HWD */ = {
+			isa = PBXGroup;
+			children = (
+				BD7F2E4A21C264AE000F438A /* MP4Parser */,
+				BD7F2E4D21C264AE000F438A /* HelloWorld.h */,
+				BD7F2E4E21C264AE000F438A /* utils */,
+				BD7F2E5721C264AE000F438A /* Decoders */,
+				BD7F2E7D21C264AF000F438A /* HelloWorld.m */,
+			);
+			path = HWD;
+			sourceTree = "<group>";
+		};
+		BD7F2E4A21C264AE000F438A /* MP4Parser */ = {
+			isa = PBXGroup;
+			children = (
+				BD7F2E4B21C264AE000F438A /* QGMP4Parser.h */,
+				BD7F2E4C21C264AE000F438A /* QGMP4Parser.m */,
+			);
+			path = MP4Parser;
+			sourceTree = "<group>";
+		};
+		BD7F2E4E21C264AE000F438A /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				BD7F2E4F21C264AE000F438A /* NSNotificationCenter+ThreadSafe.h */,
+				BD7F2E5021C264AE000F438A /* QGSafeMutableArray.h */,
+				BD7F2E5121C264AE000F438A /* QGWeakProxy.h */,
+				BD7F2E5221C264AE000F438A /* QGSafeMutableDictionary.h */,
+				BD7F2E5321C264AE000F438A /* QGSafeMutableArray.m */,
+				BD7F2E5421C264AE000F438A /* NSNotificationCenter+ThreadSafe.m */,
+				BD7F2E5521C264AE000F438A /* QGWeakProxy.m */,
+				BD7F2E5621C264AE000F438A /* QGSafeMutableDictionary.m */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
+		BD7F2E5721C264AE000F438A /* Decoders */ = {
+			isa = PBXGroup;
+			children = (
+				BD7F2E5821C264AE000F438A /* QGBaseDecoder.m */,
+				BD7F2E5921C264AE000F438A /* QGMP4FrameHWDecoder.m */,
+				BD7F2E5A21C264AF000F438A /* Models */,
+				BD7F2E6521C264AF000F438A /* QGBaseDecoder.h */,
+				BD7F2E6621C264AF000F438A /* QGMP4FrameHWDecoder.h */,
+				BD7F2E6721C264AF000F438A /* Controllers */,
+				BD7F2E7221C264AF000F438A /* Views */,
+			);
+			path = Decoders;
+			sourceTree = "<group>";
+		};
+		BD7F2E5A21C264AF000F438A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BD7F2E5B21C264AF000F438A /* QGMP4AnimatedImageFrame.m */,
+				BD7F2E5C21C264AF000F438A /* QGBaseDFileInfo.h */,
+				BD7F2E5D21C264AF000F438A /* QGBaseAnimatedImageFrame.h */,
+				BD7F2E5E21C264AF000F438A /* QGMP4HWDFileInfo.m */,
+				BD7F2E5F21C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.h */,
+				BD7F2E6021C264AF000F438A /* QGBaseDFileInfo.m */,
+				BD7F2E6121C264AF000F438A /* QGMP4AnimatedImageFrame.h */,
+				BD7F2E6221C264AF000F438A /* QGMP4HWDFileInfo.h */,
+				BD7F2E6321C264AF000F438A /* QGBaseAnimatedImageFrame.m */,
+				BD7F2E6421C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BD7F2E6721C264AF000F438A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				BD7F2E6821C264AF000F438A /* QGAnimatedImageDecodeConfig.m */,
+				BD7F2E6921C264AF000F438A /* QGAnimatedImageDecodeThread.h */,
+				BD7F2E6A21C264AF000F438A /* QGAnimatedImageDecodeThreadPool.h */,
+				BD7F2E6B21C264AF000F438A /* QGAnimatedImageBufferManager.h */,
+				BD7F2E6C21C264AF000F438A /* QGAnimatedImageDecodeManager.h */,
+				BD7F2E6D21C264AF000F438A /* QGAnimatedImageDecodeConfig.h */,
+				BD7F2E6E21C264AF000F438A /* QGAnimatedImageDecodeThreadPool.m */,
+				BD7F2E6F21C264AF000F438A /* QGAnimatedImageDecodeThread.m */,
+				BD7F2E7021C264AF000F438A /* QGAnimatedImageBufferManager.m */,
+				BD7F2E7121C264AF000F438A /* QGAnimatedImageDecodeManager.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		BD7F2E7221C264AF000F438A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BD7F2E7321C264AF000F438A /* QGHWDMP4OpenGLView.m */,
+				BD7F2E7A21C264AF000F438A /* UIView+MP4HWDecode.h */,
+				BD7F2E7B21C264AF000F438A /* QGHWDMP4OpenGLView.h */,
+				BD7F2E7C21C264AF000F438A /* UIView+MP4HWDecode.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BD7F2E9521C26508000F438A /* resource */ = {
+			isa = PBXGroup;
+			children = (
+				BD7F2E9621C2657A000F438A /* test.mp4 */,
+				BD7F2E9821C2657C000F438A /* test.png */,
+				BD7F2E9721C2657B000F438A /* test.webp */,
+				BD7F2E0521C23B89000F438A /* 31.png */,
+				BD7F2E0321C22BA2000F438A /* abc.png */,
+			);
+			path = resource;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,7 +314,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD7F2E9A21C2657C000F438A /* test.webp in Resources */,
 				BD7F2E0621C23B89000F438A /* 31.png in Resources */,
+				BD7F2E9921C2657C000F438A /* test.mp4 in Resources */,
+				BD7F2E9B21C2657C000F438A /* test.png in Resources */,
 				BD7F2E0421C22BA2000F438A /* abc.png in Resources */,
 				BD7F2DF221C13782000F438A /* LaunchScreen.storyboard in Resources */,
 				BD7F2DEF21C13782000F438A /* Assets.xcassets in Resources */,
@@ -155,10 +333,30 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD7F2E0E21C249EA000F438A /* QGHWDMetalView.swift in Sources */,
+				BD7F2E8221C264AF000F438A /* QGSafeMutableDictionary.m in Sources */,
+				BD7F2E8A21C264AF000F438A /* QGAnimatedImageDecodeConfig.m in Sources */,
+				BD7F2E8321C264AF000F438A /* QGBaseDecoder.m in Sources */,
+				BD7F2E8521C264AF000F438A /* QGMP4AnimatedImageFrame.m in Sources */,
+				BD7F2E8B21C264AF000F438A /* QGAnimatedImageDecodeThreadPool.m in Sources */,
 				BD7F2DFA21C13AB8000F438A /* Shaders.metal in Sources */,
+				BD7F2E7F21C264AF000F438A /* QGSafeMutableArray.m in Sources */,
+				BD7F2E8721C264AF000F438A /* QGBaseDFileInfo.m in Sources */,
 				BD7F2DEA21C1377F000F438A /* ViewController.swift in Sources */,
+				BD7F2E8121C264AF000F438A /* QGWeakProxy.m in Sources */,
+				BD7F2E8821C264AF000F438A /* QGBaseAnimatedImageFrame.m in Sources */,
 				BD7F2E1021C24E4A000F438A /* QGHWDMetalRenderer.swift in Sources */,
+				BD7F2E8D21C264AF000F438A /* QGAnimatedImageBufferManager.m in Sources */,
+				BD7F2E8021C264AF000F438A /* NSNotificationCenter+ThreadSafe.m in Sources */,
+				BD7F2E8C21C264AF000F438A /* QGAnimatedImageDecodeThread.m in Sources */,
+				BD7F2E8421C264AF000F438A /* QGMP4FrameHWDecoder.m in Sources */,
+				BD7F2E8621C264AF000F438A /* QGMP4HWDFileInfo.m in Sources */,
+				BD7F2E8E21C264AF000F438A /* QGAnimatedImageDecodeManager.m in Sources */,
+				BD7F2E9321C264AF000F438A /* UIView+MP4HWDecode.m in Sources */,
+				BD7F2E8F21C264AF000F438A /* QGHWDMP4OpenGLView.m in Sources */,
+				BD7F2E7E21C264AF000F438A /* QGMP4Parser.m in Sources */,
+				BD7F2E8921C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.m in Sources */,
 				BD7F2DE821C1377F000F438A /* AppDelegate.swift in Sources */,
+				BD7F2E9421C264AF000F438A /* HelloWorld.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,7 +439,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OBJC_BRIDGING_HEADER = MetalTest/QGHWDShaderTypes.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "MetalTest/MetalTest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -296,7 +494,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OBJC_BRIDGING_HEADER = MetalTest/QGHWDShaderTypes.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "MetalTest/MetalTest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};

@@ -30,6 +30,8 @@ class QGHWDMetalRenderer: NSObject {
     var commandQueue: MTLCommandQueue!
     var vertexCount: Int!
     
+    var videoTextureCache: CVMetalTextureCache?
+    
     init(metalLayer: CAMetalLayer) {
         super.init()
         
@@ -52,6 +54,17 @@ class QGHWDMetalRenderer: NSObject {
         pipelineState = try! QGHWDMetalRenderer.device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         
         commandQueue = QGHWDMetalRenderer.device.makeCommandQueue()
+        let err = CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, QGHWDMetalRenderer.device, nil, &videoTextureCache)
+        guard err == noErr else {
+            return
+        }
+    }
+    
+    func render(pixelBuffer: CVPixelBuffer?, metalLayer:CAMetalLayer?) {
+        
+        guard let pixelBuffer = pixelBuffer else { return }
+        let texture = pixelBufferToMTLTexture(pixelBuffer: pixelBuffer)
+        render(texture: texture, metalLayer: metalLayer)
     }
 
     func render(texture: MTLTexture?, metalLayer:CAMetalLayer?) {
@@ -78,6 +91,36 @@ class QGHWDMetalRenderer: NSObject {
         
         commandBuffer.present(drawable)
         commandBuffer.commit()
+    }
+    
+    func pixelBufferToMTLTexture(pixelBuffer:CVPixelBuffer) -> MTLTexture {
+        var texture:MTLTexture!
+        
+        let width = CVPixelBufferGetWidth(pixelBuffer)
+        let height = CVPixelBufferGetHeight(pixelBuffer)
+        
+        let format:MTLPixelFormat = .bgra8Unorm
+        
+        
+        var textureRef : CVMetalTexture?
+        
+        let status = CVMetalTextureCacheCreateTextureFromImage(nil,
+                                                               videoTextureCache!,
+                                                               pixelBuffer,
+                                                               nil,
+                                                               format,
+                                                               width,
+                                                               height,
+                                                               0,
+                                                               &textureRef)
+        
+        if(status == kCVReturnSuccess)
+        {
+            texture = CVMetalTextureGetTexture(textureRef!)
+            //此处也不需要释放？？
+        }
+        
+        return texture
     }
     
     static func loadTexture(imageName: String) throws -> MTLTexture? {
@@ -110,4 +153,10 @@ class QGHWDMetalRenderer: NSObject {
         return texture
     }
     
+    deinit {
+        if videoTextureCache != nil {
+            //此处release灰报错？
+//            CFRelease(videoTextureCache!)
+        }
+    }
 }

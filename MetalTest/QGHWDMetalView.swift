@@ -32,13 +32,14 @@ class QGHWDMetalView: UIView {
         layer.addSublayer(metalLayer)
     }
     
-    func display(imageName: String) {
+    @objc func display(imageName: String) {
         
         guard let texture = try? QGHWDMetalRenderer.loadTexture(imageName: imageName) else { return }
         renderer.render(texture: texture, metalLayer: metalLayer)
     }
     
-    func display(pixelBuffer: CVPixelBuffer) {
+    @objc func display(pixelBuffer: CVPixelBuffer) {
         
+        renderer.render(pixelBuffer: pixelBuffer, metalLayer: metalLayer)
     }
 }
