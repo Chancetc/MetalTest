@@ -22,17 +22,7 @@ class QGHWDMetalRenderer: NSObject {
     let hwdYUVFragmentFunctionName = "hwd_yuvFragmentShader"
     
     static var device: MTLDevice!
-    
-////    //QGHWDVertex
-//    let quadVertices: [Float] = [
-//        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
-//        -1.0, -1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
-//        -1.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0, 1.0,
-//        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
-//        -1.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
-//        1.0, 1.0, 0.0, 1.0, 1, 1.0, 0.5, 1.0
-//    ]
-    
+
     //QGHWDVertex
     let quadVertices: [Float] = [
         1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,
