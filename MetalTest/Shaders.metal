@@ -40,10 +40,12 @@ fragment float4 hwd_yuvFragmentShader(RasterizerData input [[ stage_in ]],
                                       texture2d<float> chromaTex [[ texture(1) ]],
                                       constant ColorParameters *colorParameters [[ buffer(0) ]]) {
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-    float3 yuv;
-    yuv.x = lumaTex.sample(textureSampler, input.textureColorCoordinate).r;
-    yuv.yz = chromaTex.sample(textureSampler,input.textureColorCoordinate).rg - float2(0.5);
-    matrix_float3x3 rotationMatrix = matrix_float3x3(1.0,1.0,1.0,0.0,-0.343,1.765,1.4,-0.711, 0.0);
-//    return float4(float3(rotationMatrix * yuv),1);
-    return float4(float3(colorParameters[0].yuvToRGB * yuv),1);
+    float3 color,alpha;
+    color.x = lumaTex.sample(textureSampler, input.textureColorCoordinate).r;
+    color.yz = chromaTex.sample(textureSampler,input.textureColorCoordinate).rg - float2(0.5);
+    alpha.x = lumaTex.sample(textureSampler, input.textureAlphaCoordinate).r;
+    alpha.yz = chromaTex.sample(textureSampler,input.textureAlphaCoordinate).rg - float2(0.5);
+    
+    matrix_float3x3 rotationMatrix = colorParameters[0].yuvToRGB;
+    return float4(float3(rotationMatrix * color),float3(rotationMatrix * alpha).r);
 }

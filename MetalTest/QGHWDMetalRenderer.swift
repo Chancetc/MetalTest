@@ -9,9 +9,9 @@
 import MetalKit
 
 extension matrix_float3x3 {
-    init(rowMajorValues:[Float]) {
-        guard rowMajorValues.count > 8 else { fatalError("Tried to initialize a 3x3 matrix with fewer than 9 values") }
-        self.init(rows: [float3(rowMajorValues[0],rowMajorValues[1],rowMajorValues[2]),float3(rowMajorValues[3],rowMajorValues[4],rowMajorValues[5]),float3(rowMajorValues[6],rowMajorValues[7],rowMajorValues[8])])
+    init(_ columns:[Float]) {
+        guard columns.count > 8 else { fatalError("Tried to initialize a 3x3 matrix with fewer than 9 values") }
+        self.init([float3(columns[0],columns[1],columns[2]),float3(columns[3],columns[4],columns[5]),float3(columns[6],columns[7],columns[8])])
     }
 }
 
@@ -23,7 +23,7 @@ class QGHWDMetalRenderer: NSObject {
     
     static var device: MTLDevice!
     
-//    //QGHWDVertex
+////    //QGHWDVertex
 //    let quadVertices: [Float] = [
 //        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
 //        -1.0, -1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
@@ -35,25 +35,19 @@ class QGHWDMetalRenderer: NSObject {
     
     //QGHWDVertex
     let quadVertices: [Float] = [
-        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0,
-        -1.0, -1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
-        -1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0,
-        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0,
-        -1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0
+        1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,
+        -1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
+        -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
+        1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,
+        -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
+        1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0
     ]
     
-//    public let colorConversionMatrix601FullRangeDefault = matrix_float3x3(rowMajorValues:[
-//        1.0,    1.0,    1.0,
-//        0.0,    -0.343, 1.765,
-//        1.4,    -0.711, 0.0,
-//    ])
-    
-    public let colorConversionMatrix601FullRangeDefault = matrix_float3x3(rowMajorValues:[
-        1.0,    0.0,    1.4,
-        1.0,    -0.343, -0.711,
-        1.0,    1.765, 0.0,
-        ])
+    public let colorConversionMatrix601FullRangeDefault = matrix_float3x3([
+        1.0,    1.0,    1.0,
+        0.0,    -0.343, 1.765,
+        1.4,    -0.711, 0.0,
+    ])
     
     var vertexBuffer: MTLBuffer!
     var yuvMatrixBuffer: MTLBuffer!
