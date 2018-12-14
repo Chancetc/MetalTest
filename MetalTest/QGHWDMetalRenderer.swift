@@ -8,24 +8,55 @@
 
 import MetalKit
 
+extension matrix_float3x3 {
+    init(rowMajorValues:[Float]) {
+        guard rowMajorValues.count > 8 else { fatalError("Tried to initialize a 3x3 matrix with fewer than 9 values") }
+        self.init(rows: [float3(rowMajorValues[0],rowMajorValues[1],rowMajorValues[2]),float3(rowMajorValues[3],rowMajorValues[4],rowMajorValues[5]),float3(rowMajorValues[6],rowMajorValues[7],rowMajorValues[8])])
+    }
+}
+
 class QGHWDMetalRenderer: NSObject {
     
-    let hwdFragmentFunctionName = "hwd_fragmentShader"
     let hwdVertexFunctionName = "hwd_vertexShader"
+    let hwdFragmentFunctionName = "hwd_fragmentShader"
+    let hwdYUVFragmentFunctionName = "hwd_yuvFragmentShader"
     
     static var device: MTLDevice!
     
+//    //QGHWDVertex
+//    let quadVertices: [Float] = [
+//        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
+//        -1.0, -1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
+//        -1.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0, 1.0,
+//        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
+//        -1.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
+//        1.0, 1.0, 0.0, 1.0, 1, 1.0, 0.5, 1.0
+//    ]
+    
     //QGHWDVertex
     let quadVertices: [Float] = [
-        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
-        -1.0, -1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
-        -1.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0, 1.0,
-        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,
-        -1.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0, 1, 1.0, 0.5, 1.0
+        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0,
+        -1.0, -1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+        -1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+        1.0, -1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0,
+        -1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+        1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0
     ]
     
+//    public let colorConversionMatrix601FullRangeDefault = matrix_float3x3(rowMajorValues:[
+//        1.0,    1.0,    1.0,
+//        0.0,    -0.343, 1.765,
+//        1.4,    -0.711, 0.0,
+//    ])
+    
+    public let colorConversionMatrix601FullRangeDefault = matrix_float3x3(rowMajorValues:[
+        1.0,    0.0,    1.4,
+        1.0,    -0.343, -0.711,
+        1.0,    1.765, 0.0,
+        ])
+    
     var vertexBuffer: MTLBuffer!
+    var yuvMatrixBuffer: MTLBuffer!
     var pipelineState: MTLRenderPipelineState! //This will keep track of the compiled render pipeline you’re about to create.
     var commandQueue: MTLCommandQueue!
     var vertexCount: Int!
@@ -38,13 +69,24 @@ class QGHWDMetalRenderer: NSObject {
         QGHWDMetalRenderer.device = MTLCreateSystemDefaultDevice()
         metalLayer.device = QGHWDMetalRenderer.device
         
+        setupPipelineState()
+    }
+    
+    func setupPipelineState() {
+        
+        //buffers
         let dataSize = quadVertices.count * MemoryLayout.size(ofValue: quadVertices[0])
         vertexBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: quadVertices, length: dataSize, options: [])
         vertexCount = MemoryLayout.size(ofValue: quadVertices[0])*quadVertices.count/MemoryLayout<QGHWDVertex>.stride
         
+        let yuvMatrixs = [ColorParameters(yuvToRGB: colorConversionMatrix601FullRangeDefault)]
+        
+        let yuvMatrixsDataSize = yuvMatrixs.count * MemoryLayout.size(ofValue: yuvMatrixs[0])
+        yuvMatrixBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: yuvMatrixs, length: yuvMatrixsDataSize, options: [])
+        
         let defaultLibrary = QGHWDMetalRenderer.device.makeDefaultLibrary()
         let vertexProgram = defaultLibrary?.makeFunction(name: hwdVertexFunctionName)
-        let fragmentProgram = defaultLibrary?.makeFunction(name: hwdFragmentFunctionName)
+        let fragmentProgram = defaultLibrary?.makeFunction(name: hwdYUVFragmentFunctionName)
         
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
@@ -62,9 +104,54 @@ class QGHWDMetalRenderer: NSObject {
     
     func render(pixelBuffer: CVPixelBuffer?, metalLayer:CAMetalLayer?) {
         
+        
         guard let pixelBuffer = pixelBuffer else { return }
-        let texture = pixelBufferToMTLTexture(pixelBuffer: pixelBuffer)
-        render(texture: texture, metalLayer: metalLayer)
+        
+        var yTextureRef: CVMetalTexture?
+        let yWidth = CVPixelBufferGetWidthOfPlane(pixelBuffer, 0)
+        let yHeight = CVPixelBufferGetHeightOfPlane(pixelBuffer, 0)
+        //注意格式！r8Unorm
+        let yStatus = CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, videoTextureCache!, pixelBuffer, nil, .r8Unorm, yWidth, yHeight, 0, &yTextureRef);
+        
+        var uvTextureRef: CVMetalTexture?
+        let uvWidth = CVPixelBufferGetWidthOfPlane(pixelBuffer, 1)
+        let uvHeight = CVPixelBufferGetHeightOfPlane(pixelBuffer, 1)
+        //注意格式！rg8Unorm
+        let uvStatus = CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, videoTextureCache!, pixelBuffer, nil, .rg8Unorm, uvWidth, uvHeight, 1, &uvTextureRef);
+        
+        guard yStatus == kCVReturnSuccess && uvStatus == kCVReturnSuccess else {
+            return
+        }
+        
+        let yTexture = CVMetalTextureGetTexture(yTextureRef!)
+        let uvTexture = CVMetalTextureGetTexture(uvTextureRef!)
+//        CVBufferRelease(yTextureRef!)
+//        CVBufferRelease(uvTextureRef!)
+        
+        guard yTexture != nil && uvTexture != nil && metalLayer != nil else {
+            //no texture content
+            return
+        }
+        
+        guard let drawable = metalLayer?.nextDrawable() else { return }
+        let renderPassDescriptor = MTLRenderPassDescriptor()
+        renderPassDescriptor.colorAttachments[0].texture = drawable.texture //which returns the texture in which you need to draw in order for something to appear on the screen.
+        renderPassDescriptor.colorAttachments[0].loadAction = .clear //“set the texture to the clear color before doing any drawing,”
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        
+        let commandBuffer = commandQueue.makeCommandBuffer()!
+        
+        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+        renderEncoder.setRenderPipelineState(pipelineState)
+        renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+        renderEncoder.setFragmentBuffer(yuvMatrixBuffer, offset: 0, index: 0)
+        renderEncoder.setFragmentTexture(yTexture!, index: 0)
+        renderEncoder.setFragmentTexture(uvTexture!, index: 1)
+        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
+        renderEncoder.endEncoding()
+        
+        commandBuffer.present(drawable)
+        commandBuffer.commit()
     }
 
     func render(texture: MTLTexture?, metalLayer:CAMetalLayer?) {

@@ -22,7 +22,7 @@ class QGHWDMetalView: UIView {
         
         metalLayer = CAMetalLayer()
         renderer = QGHWDMetalRenderer(metalLayer: metalLayer)
-        metalLayer.backgroundColor = UIColor.blue.cgColor
+//        metalLayer.backgroundColor = UIColor.blue.cgColor
         //important!
         metalLayer.isOpaque = false
         metalLayer.contentsScale = UIScreen.main.scale

@@ -188,8 +188,8 @@ NSInteger const QGMP4HWDMaxFPS = 60;
             nextFrame.duration = 1000/(double)fps;
             //QG_Debug(MODULE_DECODE, @"display frame:%@, has frameBuffer:%@",@(nextIndex),@(nextFrame.pixelBuffer != nil));
 //            [self.HWDOpenGLView displayPixelBuffer:nextFrame.pixelBuffer];
-//            [self.HWDMetalView displayWithPixelBuffer:nextFrame.pixelBuffer];
-            [self.HWDMetalView displayWithImageName:@"31"];
+            [self.HWDMetalView displayWithPixelBuffer:nextFrame.pixelBuffer];
+//            [self.HWDMetalView displayWithImageName:@"31"];
             self.currentHWDFrameInstance = nextFrame;
             
             [self.callbackQueue addOperationWithBlock:^{

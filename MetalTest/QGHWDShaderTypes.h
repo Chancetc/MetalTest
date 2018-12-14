@@ -18,4 +18,9 @@ typedef struct {
     packed_float2 textureAlphaCoordinate;
 } QGHWDVertex;
 
+struct ColorParameters
+{
+    matrix_float3x3 yuvToRGB;
+};
+
 #endif /* QGHWDShaderTypes_h */

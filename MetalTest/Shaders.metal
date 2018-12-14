@@ -18,11 +18,6 @@ typedef struct {
     float2 textureAlphaCoordinate;
 } RasterizerData;
 
-struct ColorParameters
-{
-    float3x3 yuvToRGB;
-};
-
 vertex RasterizerData hwd_vertexShader(uint vertexID [[ vertex_id ]], constant QGHWDVertex *vertexArray [[ buffer(0) ]]) {
     
     RasterizerData out;
@@ -35,17 +30,20 @@ vertex RasterizerData hwd_vertexShader(uint vertexID [[ vertex_id ]], constant Q
 fragment float4 hwd_fragmentShader(RasterizerData input [[ stage_in ]], texture2d<float> texture [[ texture(0)]]) {
     
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-    
-    
     float4 colorSample = texture.sample(textureSampler, input.textureColorCoordinate);
     float4 alphaSample = texture.sample(textureSampler, input.textureAlphaCoordinate);
     return float4(colorSample.rgb,alphaSample.r);
 }
 
-fragment float4 hwd_yuvFragmentShader(RasterizerData inFrag [[ stage_in ]],
-                                      texture2d<float>  lumaTex     [[ texture(0) ]],
-                                      texture2d<float>  chromaTex     [[ texture(1) ]],
+fragment float4 hwd_yuvFragmentShader(RasterizerData input [[ stage_in ]],
+                                      texture2d<float> lumaTex [[ texture(0) ]],
+                                      texture2d<float> chromaTex [[ texture(1) ]],
                                       constant ColorParameters *colorParameters [[ buffer(0) ]]) {
-    
-    return float4(1.0);
+    constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
+    float3 yuv;
+    yuv.x = lumaTex.sample(textureSampler, input.textureColorCoordinate).r;
+    yuv.yz = chromaTex.sample(textureSampler,input.textureColorCoordinate).rg - float2(0.5);
+    matrix_float3x3 rotationMatrix = matrix_float3x3(1.0,1.0,1.0,0.0,-0.343,1.765,1.4,-0.711, 0.0);
+//    return float4(float3(rotationMatrix * yuv),1);
+    return float4(float3(colorParameters[0].yuvToRGB * yuv),1);
 }
