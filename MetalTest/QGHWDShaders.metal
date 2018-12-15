@@ -28,17 +28,25 @@ vertex RasterizerData hwd_vertexShader(uint vertexID [[ vertex_id ]], constant Q
 }
 
 fragment float4 hwd_yuvFragmentShader(RasterizerData input [[ stage_in ]],
-                                      texture2d<float> lumaTex [[ texture(0) ]],
-                                      texture2d<float> chromaTex [[ texture(1) ]],
-                                      constant ColorParameters *colorParameters [[ buffer(0) ]]) {
+                                      array<texture2d<float>, QGHWDNumTextureArguments> textures [[ texture(0) ]],
+                                      constant ColorParameters *colorParameters [[ buffer(0) ]],
+                                      constant int &validTextureCount [[ buffer(1) ]]) {
     
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
     float3 color,alpha;
-    color.x = lumaTex.sample(textureSampler, input.textureColorCoordinate).r;
-    color.yz = chromaTex.sample(textureSampler,input.textureColorCoordinate).rg - float2(0.5);
-    alpha.x = lumaTex.sample(textureSampler, input.textureAlphaCoordinate).r;
-    alpha.yz = chromaTex.sample(textureSampler,input.textureAlphaCoordinate).rg - float2(0.5);
+    float2 offset = colorParameters[0].offset;
+    texture2d<float> texture_luma = textures[QGHWDYUVFragmentTextureIndexLuma];
+    uint32_t chromaIndex = validTextureCount-1;
+    //?没理解这里
+    if (chromaIndex != 1) {
+        return float4(1.0,0.0,0.0,0.0);
+    }
+    texture2d<float> texture_chroma = textures[chromaIndex];//QGHWDYUVFragmentTextureIndexChroma
+    color.x = texture_luma.sample(textureSampler, input.textureColorCoordinate).r;
+    color.yz = texture_chroma.sample(textureSampler,input.textureColorCoordinate).rg - offset;
+    alpha.x = texture_luma.sample(textureSampler, input.textureAlphaCoordinate).r;
+    alpha.yz = texture_chroma.sample(textureSampler,input.textureAlphaCoordinate).rg - offset;
     
-    matrix_float3x3 rotationMatrix = colorParameters[0].yuvToRGB;
+    matrix_float3x3 rotationMatrix = colorParameters[0].matrix;
     return float4(float3(rotationMatrix * color),float3(rotationMatrix * alpha).r);
 }

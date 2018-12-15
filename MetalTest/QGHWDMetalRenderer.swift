@@ -98,7 +98,7 @@ class QGHWDMetalRenderer: NSObject {
         vertexBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: vertices, length: dataSize, options: [])
         vertexCount = MemoryLayout.size(ofValue: vertices[0])*vertices.count/MemoryLayout<QGHWDVertex>.stride
         
-        let yuvMatrixs = [ColorParameters(yuvToRGB: colorConversionMatrix601FullRangeDefault)]
+        let yuvMatrixs = [ColorParameters(matrix: colorConversionMatrix601FullRangeDefault, offset: packed_float2(0.5, 0.5))]
         let yuvMatrixsDataSize = yuvMatrixs.count * MemoryLayout.size(ofValue: yuvMatrixs[0])
         yuvMatrixBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: yuvMatrixs, length: yuvMatrixsDataSize, options: [])
         
@@ -158,8 +158,11 @@ class QGHWDMetalRenderer: NSObject {
         renderEncoder.setRenderPipelineState(pipelineState)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.setFragmentBuffer(yuvMatrixBuffer, offset: 0, index: 0)
-        renderEncoder.setFragmentTexture(yTexture!, index: 0)
-        renderEncoder.setFragmentTexture(uvTexture!, index: 1)
+        renderEncoder.setFragmentTexture(yTexture!, index: Int(QGHWDYUVFragmentTextureIndexLuma.rawValue))
+        renderEncoder.setFragmentTexture(uvTexture!, index: Int(QGHWDYUVFragmentTextureIndexChroma.rawValue))
+        var count = UInt32(2)
+        renderEncoder.setFragmentBytes(&count,
+                                       length: MemoryLayout<UInt32>.stride, index: 1)
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
         renderEncoder.endEncoding()
         
