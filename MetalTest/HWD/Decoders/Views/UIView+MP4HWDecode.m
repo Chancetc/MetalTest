@@ -25,7 +25,7 @@ NSInteger const QGMP4HWDDefaultFPS = 18;
 NSInteger const QGMP4HWDMinFPS = 1;
 NSInteger const QGMP4HWDMaxFPS = 60;
 
-@interface UIView () <QGAnimatedImageDecoderDelegate,QGHWDMP4OpenGLViewDelegate>
+@interface UIView () <QGAnimatedImageDecoderDelegate,QGHWDMP4OpenGLViewDelegate,QGHWDMetelViewDelegate>
 
 @property (nonatomic, strong) QGMP4AnimatedImageFrame *currentHWDFrameInstance; //store the frame value
 
@@ -71,7 +71,7 @@ NSInteger const QGMP4HWDMaxFPS = 60;
 - (void)didReceiveEnterBackgroundNotification:(NSNotification *)notification {
 
     //QG_Event(MODULE_DECODE, @"didReceiveEnterBackgroundNotification");
-    [self stopHWDMP4];
+//    [self stopHWDMP4];
 }
 
 - (void)didReceiveWillEnterForegroundNotification:(NSNotification *)notification {
@@ -147,11 +147,13 @@ NSInteger const QGMP4HWDMaxFPS = 60;
     
     if (!self.HWDMetalView) {
         QGHWDMetalView *metalView = [[QGHWDMetalView alloc] initWithFrame:self.bounds];
+        metalView.delegate = self;
         [self addSubview:metalView];
         self.HWDMetalView = metalView;
     }
     
     self.HWDOpenGLView.blendMode = mode;
+    self.HWDMetalView.blendMode = mode;
     
     self.decodeManager = [[QGAnimatedImageDecodeManager alloc] initWith:self.fileInfo config:self.decodeConfig delegate:self];
     
@@ -279,6 +281,12 @@ NSInteger const QGMP4HWDMaxFPS = 60;
             [self.MP4PlayDelegate viewDidFailPlayMP4:error];
         }
     }];
+}
+
+
+- (void)onMetalViewUnavailable {
+    
+    [self stopHWDMP4];
 }
 
 - (void)onViewUnavailableStatus {

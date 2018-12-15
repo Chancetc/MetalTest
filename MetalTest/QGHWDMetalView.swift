@@ -8,10 +8,25 @@
 
 import MetalKit
 
+@objc protocol QGHWDMetelViewDelegate {
+    
+    func onMetalViewUnavailable();
+}
+
 class QGHWDMetalView: UIView {
     
-    var metalLayer: CAMetalLayer!
-    var renderer: QGHWDMetalRenderer!
+    @objc weak var delegate: QGHWDMetelViewDelegate?
+    @objc var blendMode: QGHWDTextureBlendMode {
+        get {
+            return renderer.blendMode
+        }
+        set {
+            renderer.blendMode = newValue
+        }
+    }
+    
+    private var metalLayer: CAMetalLayer!
+    private var renderer: QGHWDMetalRenderer!
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -22,7 +37,6 @@ class QGHWDMetalView: UIView {
         
         metalLayer = CAMetalLayer()
         renderer = QGHWDMetalRenderer(metalLayer: metalLayer)
-//        metalLayer.backgroundColor = UIColor.blue.cgColor
         //important!
         metalLayer.isOpaque = false
         metalLayer.contentsScale = UIScreen.main.scale
@@ -32,14 +46,22 @@ class QGHWDMetalView: UIView {
         layer.addSublayer(metalLayer)
     }
     
-    @objc func display(imageName: String) {
-        
-        guard let texture = try? QGHWDMetalRenderer.loadTexture(imageName: imageName) else { return }
-        renderer.render(texture: texture, metalLayer: metalLayer)
+    deinit {
+        onMetalViewUnavailable()
     }
     
     @objc func display(pixelBuffer: CVPixelBuffer) {
         
+        guard window != nil else {
+            onMetalViewUnavailable()
+            return
+        }
         renderer.render(pixelBuffer: pixelBuffer, metalLayer: metalLayer)
+    }
+    
+    func onMetalViewUnavailable() {
+        
+        guard let delegate = delegate else { return }
+        delegate.onMetalViewUnavailable()
     }
 }

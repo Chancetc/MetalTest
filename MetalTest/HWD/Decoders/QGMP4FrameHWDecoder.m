@@ -281,6 +281,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
 
 - (BOOL)onInputStart {
     
+    [self clearContext];
     //QG_Info(MODULE_DECODE, @"onInputStart");
     NSFileManager *fileMgr = [NSFileManager defaultManager];
     if (![fileMgr fileExistsAtPath:self.fileInfo.filePath]) {
@@ -340,52 +341,15 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         //QG_Event(MODULE_DECODE, @"sps&pps is already has value.");
         return YES;
     }
-    // 1. get SPS,PPS form stream data, and create CMFormatDescription 和 VTDecompressionSession
-    //    uint8_t *data = self.pCodecCtx -> extradata;
-    //    int size = self.pCodecCtx -> extradata_size;
-    //
-    //    int startCodeSPSIndex = 0;
-    //    int startCodePPSIndex = 0;
-    //    int spsLength = 0;
-    //    int ppsLength = 0;
-    //
-    //    NSString *tmp3 = [NSString new];
-    //    for(int i = 0; i < size; i++) {
-    //        NSString *str = [NSString stringWithFormat:@" %.2X",data[i]];
-    //        tmp3 = [tmp3 stringByAppendingString:str];
-    //        switch (data[i]) {
-    //            case 0x67:
-    //                startCodeSPSIndex = i;
-    //                break;
-    //            case 0x68:
-    //                startCodePPSIndex = i;
-    //                break;
-    //            default:
-    //                break;
-    //        }
-    //    }
-    //    //QG_Info(MODULE_DECODE, @"avcc extra data is :%@",tmp3);
-    //    spsLength = data[startCodeSPSIndex-1];
-    //    ppsLength = data[startCodePPSIndex-1];
-    //    //QG_Info(MODULE_DECODE, @"startCodeSPSIndex:%@ startCodePPSIndex:%@ spsLength:%@ ppsLength:%@",@(startCodeSPSIndex),@(startCodePPSIndex),@(spsLength),@(ppsLength));
-    //
-    //    int nalu_type = ((uint8_t) data[startCodeSPSIndex] & 0x1F);
-    //    if (nalu_type == 7) {
-    //        //QG_Info(MODULE_DECODE, @"spsData init");
-    //        self.spsData = [NSData dataWithBytes:&(data[startCodeSPSIndex]) length: spsLength];
-    //    }
-    //
-    //    nalu_type = ((uint8_t) data[startCodePPSIndex] & 0x1F);
-    //    if (nalu_type == 8) {
-    //        //QG_Info(MODULE_DECODE, @"ppsdata init");
-    //        self.ppsData = [NSData dataWithBytes:&(data[startCodePPSIndex]) length: ppsLength];
-    //    }
-    
     self.spsData = _mp4Parser.spsData;
     self.ppsData = _mp4Parser.ppsData;
     
     // 2. create  CMFormatDescription
     if (self.spsData != nil && self.ppsData != nil) {
+        if (_mFormatDescription) {
+            CFRelease(_mFormatDescription);
+            _mFormatDescription = nil;
+        }
         const uint8_t* const parameterSetPointers[2] = { (const uint8_t*)[self.spsData bytes], (const uint8_t*)[self.ppsData bytes] };
         const size_t parameterSetSizes[2] = { [self.spsData length], [self.ppsData length] };
         _status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault, 2, parameterSetPointers, parameterSetSizes, 4, &_mFormatDescription);
@@ -408,7 +372,12 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     VTDecompressionOutputCallbackRecord callBackRecord;
     callBackRecord.decompressionOutputCallback = didDecompress;
     callBackRecord.decompressionOutputRefCon = NULL;
-    
+    if (_mDecodeSession) {
+        VTDecompressionSessionWaitForAsynchronousFrames(_mDecodeSession);
+        VTDecompressionSessionInvalidate(_mDecodeSession);
+        CFRelease(_mDecodeSession);
+        _mDecodeSession = NULL;
+    }
     _status = VTDecompressionSessionCreate(kCFAllocatorDefault,
                                            _mFormatDescription,
                                            NULL, attrs,
@@ -424,37 +393,35 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     return YES;
 }
 
+- (void)clearContext {
+    
+    if (_mDecodeSession) {
+        VTDecompressionSessionWaitForAsynchronousFrames(_mDecodeSession);
+        VTDecompressionSessionInvalidate(_mDecodeSession);
+        CFRelease(_mDecodeSession);
+        _mDecodeSession = NULL;
+    }
+    
+    if (self.spsData || self.ppsData) {
+        self.spsData = nil;
+        self.ppsData = nil;
+    }
+    if (_mFormatDescription) {
+        CFRelease(_mFormatDescription);
+        _mFormatDescription = nil;
+    }
+}
+
 - (void)onInputEnd {
     
     //QG_Info(MODULE_DECODE, @"onInputEnd");
     @synchronized (self) {
+        
         if (_isFinish) {
             //QG_Info(MODULE_DECODE, @"already ended.");
             return ;
         }
-        if (_mDecodeSession) {
-            VTDecompressionSessionInvalidate(_mDecodeSession);
-            _mDecodeSession = nil;
-        }
-        if (self.spsData || self.ppsData) {
-            self.spsData = nil;
-            self.ppsData = nil;
-        }
-        
-        //        // Free the packet that was allocated by av_read_frame
-        //        av_packet_unref(&_packet);
-        //
-        //        // Close the codec
-        //        if (self.pCodecCtx) {
-        //            avcodec_close(self.pCodecCtx);
-        //        }
-        //
-        //        // Close the video file
-        //        if (self.pFormatCtx) {
-        //            avformat_close_input(&_pFormatCtx);
-        //            avformat_free_context(self.pFormatCtx);
-        //        }
-        
+        [self clearContext];
         _isFinish = YES;
     }
 }

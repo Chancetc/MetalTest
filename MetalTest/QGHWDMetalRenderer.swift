@@ -17,21 +17,33 @@ extension matrix_float3x3 {
 
 class QGHWDMetalRenderer: NSObject {
     
+    // - MARK: CONSTANTS
     let hwdVertexFunctionName = "hwd_vertexShader"
-    let hwdFragmentFunctionName = "hwd_fragmentShader"
     let hwdYUVFragmentFunctionName = "hwd_yuvFragmentShader"
     
-    static var device: MTLDevice!
-
-    //QGHWDVertex
-    let quadVertices: [Float] = [
-        1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,
-        -1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
+    //QGHWDVertex  顶点坐标+纹理坐标（rdb+alpha）
+    let quadVerticesConstants: [[Float]] = [
+        //左侧alpha
+        [-1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
         -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
         1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,
-        -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
-        1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0
-    ]
+        1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0],
+        //右侧alpha
+        [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.5, 1.0,
+         -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.0,
+         1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 1.0, 1.0,
+         1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 1.0, 0.0],
+        //顶部alpha
+        [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.5,
+         -1.0, 1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.0,
+         1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.5,
+         1.0, 1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 0.0],
+        //底部alpha
+        [-1.0, -1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 1.0,
+         -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.5,
+         1.0, -1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 1.0,
+         1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.5],
+        ]
     
     public let colorConversionMatrix601FullRangeDefault = matrix_float3x3([
         1.0,    1.0,    1.0,
@@ -39,29 +51,32 @@ class QGHWDMetalRenderer: NSObject {
         1.4,    -0.711, 0.0,
     ])
     
+    // - MARK: VARS
+    static var device: MTLDevice!
+    var blendMode: QGHWDTextureBlendMode
     var vertexBuffer: MTLBuffer!
     var yuvMatrixBuffer: MTLBuffer!
     var pipelineState: MTLRenderPipelineState! //This will keep track of the compiled render pipeline you’re about to create.
     var commandQueue: MTLCommandQueue!
     var vertexCount: Int!
-    
     var videoTextureCache: CVMetalTextureCache?
     
     init(metalLayer: CAMetalLayer) {
-        super.init()
         
+        blendMode = .alphaLeft
+        super.init()
         QGHWDMetalRenderer.device = MTLCreateSystemDefaultDevice()
         metalLayer.device = QGHWDMetalRenderer.device
-        
         setupPipelineState()
     }
     
     func setupPipelineState() {
         
         //buffers
-        let dataSize = quadVertices.count * MemoryLayout.size(ofValue: quadVertices[0])
-        vertexBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: quadVertices, length: dataSize, options: [])
-        vertexCount = MemoryLayout.size(ofValue: quadVertices[0])*quadVertices.count/MemoryLayout<QGHWDVertex>.stride
+        let vertices = suitableQuadVertices
+        let dataSize = vertices.count * MemoryLayout.size(ofValue: vertices[0])
+        vertexBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: vertices, length: dataSize, options: [])
+        vertexCount = MemoryLayout.size(ofValue: vertices[0])*vertices.count/MemoryLayout<QGHWDVertex>.stride
         
         let yuvMatrixs = [ColorParameters(yuvToRGB: colorConversionMatrix601FullRangeDefault)]
         
@@ -88,9 +103,7 @@ class QGHWDMetalRenderer: NSObject {
     
     func render(pixelBuffer: CVPixelBuffer?, metalLayer:CAMetalLayer?) {
         
-        
         guard let pixelBuffer = pixelBuffer else { return }
-        
         var yTextureRef: CVMetalTexture?
         let yWidth = CVPixelBufferGetWidthOfPlane(pixelBuffer, 0)
         let yHeight = CVPixelBufferGetHeightOfPlane(pixelBuffer, 0)
@@ -109,8 +122,6 @@ class QGHWDMetalRenderer: NSObject {
         
         let yTexture = CVMetalTextureGetTexture(yTextureRef!)
         let uvTexture = CVMetalTextureGetTexture(uvTextureRef!)
-//        CVBufferRelease(yTextureRef!)
-//        CVBufferRelease(uvTextureRef!)
         
         guard yTexture != nil && uvTexture != nil && metalLayer != nil else {
             //no texture content
@@ -124,44 +135,36 @@ class QGHWDMetalRenderer: NSObject {
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         
         let commandBuffer = commandQueue.makeCommandBuffer()!
-        
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         renderEncoder.setRenderPipelineState(pipelineState)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.setFragmentBuffer(yuvMatrixBuffer, offset: 0, index: 0)
         renderEncoder.setFragmentTexture(yTexture!, index: 0)
         renderEncoder.setFragmentTexture(uvTexture!, index: 1)
-        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
+        renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
         renderEncoder.endEncoding()
         
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
+}
 
-    func render(texture: MTLTexture?, metalLayer:CAMetalLayer?) {
+extension QGHWDMetalRenderer {
+    
+    var suitableQuadVertices: [Float] {
         
-        guard texture != nil && metalLayer != nil else {
-            //no texture content
-            return
+        switch blendMode {
+        case .alphaLeft:
+            return quadVerticesConstants[0]
+        case .alphaRight:
+            return quadVerticesConstants[1]
+        case .alphaTop:
+            return quadVerticesConstants[2]
+        case .alphaBottom:
+            return quadVerticesConstants[3]
+        default:
+            return quadVerticesConstants[0]
         }
-        //metalLayer.drawableSize = CGSize(width: metalLayer.contentsScale*metalLayer.frame.size.width, height: metalLayer.contentsScale*metalLayer.frame.size.height)
-        guard let drawable = metalLayer?.nextDrawable() else { return }
-        let renderPassDescriptor = MTLRenderPassDescriptor()
-        renderPassDescriptor.colorAttachments[0].texture = drawable.texture //which returns the texture in which you need to draw in order for something to appear on the screen.
-        renderPassDescriptor.colorAttachments[0].loadAction = .clear //“set the texture to the clear color before doing any drawing,”
-        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        
-        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-        renderEncoder.setRenderPipelineState(pipelineState)
-        renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        renderEncoder.setFragmentTexture(texture!, index: 0)
-        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
-        renderEncoder.endEncoding()
-        
-        commandBuffer.present(drawable)
-        commandBuffer.commit()
     }
     
     func pixelBufferToMTLTexture(pixelBuffer:CVPixelBuffer) -> MTLTexture {
@@ -195,21 +198,17 @@ class QGHWDMetalRenderer: NSObject {
     }
     
     static func loadTexture(imageName: String) throws -> MTLTexture? {
-        // 1
-        let textureLoader = MTKTextureLoader(device: QGHWDMetalRenderer.device)
         
-        // 2
+        let textureLoader = MTKTextureLoader(device: QGHWDMetalRenderer.device)
         let textureLoaderOptions: [MTKTextureLoader.Option: Any] =
             [.origin: MTKTextureLoader.Origin.bottomLeft,
              .SRGB: false,
              .generateMipmaps: NSNumber(booleanLiteral: true)]
         
-        // 3
         let fileExtension =
             URL(fileURLWithPath: imageName).pathExtension.isEmpty ?
                 "png" : nil
         
-        // 4
         guard let url = Bundle.main.url(forResource: imageName,
                                         withExtension: fileExtension)
             else {
@@ -222,12 +221,5 @@ class QGHWDMetalRenderer: NSObject {
                                                    options: textureLoaderOptions)
         print("loaded texture: \(url.lastPathComponent)")
         return texture
-    }
-    
-    deinit {
-        if videoTextureCache != nil {
-            //此处release灰报错？
-//            CFRelease(videoTextureCache!)
-        }
     }
 }
