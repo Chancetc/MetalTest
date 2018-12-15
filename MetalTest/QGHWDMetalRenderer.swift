@@ -34,6 +34,30 @@ public let colorConversionMatrix709Default = matrix_float3x3([
     1.793, -0.533,   0.0,
     ])
 
+//QGHWDVertex  顶点坐标+纹理坐标（rdb+alpha）
+private let quadVerticesConstants: [[Float]] = [
+    //左侧alpha
+    [-1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
+     -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
+     1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,
+     1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0],
+    //右侧alpha
+    [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.5, 1.0,
+     -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.0,
+     1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 1.0, 1.0,
+     1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 1.0, 0.0],
+    //顶部alpha
+    [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.5,
+     -1.0, 1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.0,
+     1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.5,
+     1.0, 1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 0.0],
+    //底部alpha
+    [-1.0, -1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 1.0,
+     -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.5,
+     1.0, -1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 1.0,
+     1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.5],
+]
+
 extension matrix_float3x3 {
     init(_ columns:[Float]) {
         guard columns.count > 8 else { fatalError("Tried to initialize a 3x3 matrix with fewer than 9 values") }
@@ -46,31 +70,7 @@ class QGHWDMetalRenderer: NSObject {
     // - MARK: CONSTANTS
     let hwdVertexFunctionName = "hwd_vertexShader"
     let hwdYUVFragmentFunctionName = "hwd_yuvFragmentShader"
-    
-    //QGHWDVertex  顶点坐标+纹理坐标（rdb+alpha）
-    let quadVerticesConstants: [[Float]] = [
-        //左侧alpha
-        [-1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
-        -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
-        1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,
-        1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0],
-        //右侧alpha
-        [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.5, 1.0,
-         -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.0,
-         1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 1.0, 1.0,
-         1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 1.0, 0.0],
-        //顶部alpha
-        [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.5,
-         -1.0, 1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.0,
-         1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.5,
-         1.0, 1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 0.0],
-        //底部alpha
-        [-1.0, -1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 1.0,
-         -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.5,
-         1.0, -1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 1.0,
-         1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.5],
-        ]
-    
+
     // - MARK: VARS
     static var device: MTLDevice!
     var blendMode: QGHWDTextureBlendMode
@@ -87,10 +87,10 @@ class QGHWDMetalRenderer: NSObject {
         super.init()
         QGHWDMetalRenderer.device = MTLCreateSystemDefaultDevice()
         metalLayer.device = QGHWDMetalRenderer.device
-        setupPipelineState()
+        setupPipelineState(metalLayer)
     }
     
-    func setupPipelineState() {
+    func setupPipelineState(_ metalLayer: CAMetalLayer) {
         
         //buffers
         let vertices = suitableQuadVertices
@@ -109,7 +109,7 @@ class QGHWDMetalRenderer: NSObject {
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = metalLayer.pixelFormat
         
         pipelineState = try! QGHWDMetalRenderer.device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         
@@ -187,16 +187,12 @@ extension QGHWDMetalRenderer {
     }
     
     func pixelBufferToMTLTexture(pixelBuffer:CVPixelBuffer) -> MTLTexture {
-        var texture:MTLTexture!
         
+        var texture:MTLTexture!
         let width = CVPixelBufferGetWidth(pixelBuffer)
         let height = CVPixelBufferGetHeight(pixelBuffer)
-        
         let format:MTLPixelFormat = .bgra8Unorm
-        
-        
         var textureRef : CVMetalTexture?
-        
         let status = CVMetalTextureCacheCreateTextureFromImage(nil,
                                                                videoTextureCache!,
                                                                pixelBuffer,
@@ -210,9 +206,7 @@ extension QGHWDMetalRenderer {
         if(status == kCVReturnSuccess)
         {
             texture = CVMetalTextureGetTexture(textureRef!)
-            //此处也不需要释放？？
         }
-        
         return texture
     }
     
