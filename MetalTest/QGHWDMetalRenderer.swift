@@ -8,6 +8,32 @@
 
 import MetalKit
 
+// BT.601, which is the standard for SDTV.
+public let colorConversionMatrix601Default = matrix_float3x3([
+    1.164,  1.164, 1.164,
+    0.0, -0.392, 2.017,
+    1.596, -0.813,   0.0
+    ])
+
+/*矩阵形式！！！
+  1.0 0.0 1.4
+ [1.0 -0.343 -0.711 ]
+  1.0 1.765 0.0
+ */
+//ITU BT.601 Full Range
+public let colorConversionMatrix601FullRangeDefault = matrix_float3x3([
+    1.0,    1.0,    1.0,
+    0.0,    -0.343, 1.765,
+    1.4,    -0.711, 0.0,
+    ])
+
+// BT.709, which is the standard for HDTV.
+public let colorConversionMatrix709Default = matrix_float3x3([
+    1.164,  1.164, 1.164,
+    0.0, -0.213, 2.112,
+    1.793, -0.533,   0.0,
+    ])
+
 extension matrix_float3x3 {
     init(_ columns:[Float]) {
         guard columns.count > 8 else { fatalError("Tried to initialize a 3x3 matrix with fewer than 9 values") }
@@ -45,12 +71,6 @@ class QGHWDMetalRenderer: NSObject {
          1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.5],
         ]
     
-    public let colorConversionMatrix601FullRangeDefault = matrix_float3x3([
-        1.0,    1.0,    1.0,
-        0.0,    -0.343, 1.765,
-        1.4,    -0.711, 0.0,
-    ])
-    
     // - MARK: VARS
     static var device: MTLDevice!
     var blendMode: QGHWDTextureBlendMode
@@ -79,7 +99,6 @@ class QGHWDMetalRenderer: NSObject {
         vertexCount = MemoryLayout.size(ofValue: vertices[0])*vertices.count/MemoryLayout<QGHWDVertex>.stride
         
         let yuvMatrixs = [ColorParameters(yuvToRGB: colorConversionMatrix601FullRangeDefault)]
-        
         let yuvMatrixsDataSize = yuvMatrixs.count * MemoryLayout.size(ofValue: yuvMatrixs[0])
         yuvMatrixBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: yuvMatrixs, length: yuvMatrixsDataSize, options: [])
         

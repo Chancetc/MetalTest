@@ -31,6 +31,7 @@ fragment float4 hwd_yuvFragmentShader(RasterizerData input [[ stage_in ]],
                                       texture2d<float> lumaTex [[ texture(0) ]],
                                       texture2d<float> chromaTex [[ texture(1) ]],
                                       constant ColorParameters *colorParameters [[ buffer(0) ]]) {
+    
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
     float3 color,alpha;
     color.x = lumaTex.sample(textureSampler, input.textureColorCoordinate).r;

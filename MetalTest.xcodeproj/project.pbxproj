@@ -12,7 +12,7 @@
 		BD7F2DED21C1377F000F438A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2DEB21C1377F000F438A /* Main.storyboard */; };
 		BD7F2DEF21C13782000F438A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2DEE21C13782000F438A /* Assets.xcassets */; };
 		BD7F2DF221C13782000F438A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2DF021C13782000F438A /* LaunchScreen.storyboard */; };
-		BD7F2DFA21C13AB8000F438A /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2DF921C13AB8000F438A /* Shaders.metal */; };
+		BD7F2DFA21C13AB8000F438A /* QGHWDShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2DF921C13AB8000F438A /* QGHWDShaders.metal */; };
 		BD7F2E0421C22BA2000F438A /* abc.png in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E0321C22BA2000F438A /* abc.png */; };
 		BD7F2E0621C23B89000F438A /* 31.png in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2E0521C23B89000F438A /* 31.png */; };
 		BD7F2E0E21C249EA000F438A /* QGHWDMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */; };
@@ -58,7 +58,7 @@
 		BD7F2DEE21C13782000F438A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BD7F2DF121C13782000F438A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BD7F2DF321C13782000F438A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BD7F2DF921C13AB8000F438A /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		BD7F2DF921C13AB8000F438A /* QGHWDShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = QGHWDShaders.metal; sourceTree = "<group>"; };
 		BD7F2E0221C21948000F438A /* QGHWDShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QGHWDShaderTypes.h; sourceTree = "<group>"; };
 		BD7F2E0321C22BA2000F438A /* abc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = abc.png; sourceTree = "<group>"; };
 		BD7F2E0521C23B89000F438A /* 31.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 31.png; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 				BD7F2DEE21C13782000F438A /* Assets.xcassets */,
 				BD7F2DF021C13782000F438A /* LaunchScreen.storyboard */,
 				BD7F2DF321C13782000F438A /* Info.plist */,
-				BD7F2DF921C13AB8000F438A /* Shaders.metal */,
+				BD7F2DF921C13AB8000F438A /* QGHWDShaders.metal */,
 				BD7F2E0221C21948000F438A /* QGHWDShaderTypes.h */,
 				BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */,
 				BD7F2E0F21C24E4A000F438A /* QGHWDMetalRenderer.swift */,
@@ -378,7 +378,7 @@
 				BD7F2E8321C264AF000F438A /* QGBaseDecoder.m in Sources */,
 				BD7F2E8521C264AF000F438A /* QGMP4AnimatedImageFrame.m in Sources */,
 				BD7F2E8B21C264AF000F438A /* QGAnimatedImageDecodeThreadPool.m in Sources */,
-				BD7F2DFA21C13AB8000F438A /* Shaders.metal in Sources */,
+				BD7F2DFA21C13AB8000F438A /* QGHWDShaders.metal in Sources */,
 				BD7F2E7F21C264AF000F438A /* QGSafeMutableArray.m in Sources */,
 				BD7F2E8721C264AF000F438A /* QGBaseDFileInfo.m in Sources */,
 				BD7F2DEA21C1377F000F438A /* ViewController.swift in Sources */,

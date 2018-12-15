@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MetalTest/QGHWDMetalRenderer.swift"
-            timestampString = "566550506.968663"
+            timestampString = "566563986.898042"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
             landmarkName = "render(pixelBuffer:metalLayer:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MetalTest/QGHWDMetalRenderer.swift"
-            timestampString = "566550506.969009"
+            timestampString = "566563986.8988661"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
             landmarkName = "render(pixelBuffer:metalLayer:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MetalTest/ViewController.swift"
-            timestampString = "566550506.969071"
+            timestampString = "566563986.899043"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "22"
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MetalTest/QGHWDMetalView.swift"
-            timestampString = "566550506.96929"
+            timestampString = "566563986.8996511"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
             landmarkName = "deinit"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MetalTest/HWD/Decoders/QGMP4FrameHWDecoder.m"
-            timestampString = "566550506.96995"
+            timestampString = "566563986.90016"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "355"
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MetalTest/HWD/Decoders/QGMP4FrameHWDecoder.m"
-            timestampString = "566550506.970201"
+            timestampString = "566563986.900591"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "409"
@@ -105,29 +105,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MetalTest/QGHWDMetalView.swift"
-            timestampString = "566550506.9702719"
+            filePath = "MetalTest/QGHWDMetalRenderer.swift"
+            timestampString = "566563986.90071"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
-            landmarkName = "display(pixelBuffer:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "MetalTest/QGHWDMetalView.swift"
-            timestampString = "566550506.970587"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "init(frame:)"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "setupPipelineState()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
