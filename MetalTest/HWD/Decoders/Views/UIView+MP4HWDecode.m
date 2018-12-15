@@ -149,6 +149,10 @@ NSInteger const QGMP4HWDMaxFPS = 60;
         QGHWDMetalView *metalView = [[QGHWDMetalView alloc] initWithFrame:self.bounds];
         metalView.delegate = self;
         [self addSubview:metalView];
+        metalView.translatesAutoresizingMaskIntoConstraints = false;
+        NSDictionary *views = @{@"metalView": metalView};
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[metalView]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[metalView]|" options:0 metrics:nil views:views]];
         self.HWDMetalView = metalView;
     }
     

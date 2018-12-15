@@ -24,26 +24,40 @@ class QGHWDMetalView: UIView {
             renderer.blendMode = newValue
         }
     }
-    
     private var metalLayer: CAMetalLayer!
     private var renderer: QGHWDMetalRenderer!
+    private var drawableSizeShouldUpdate: Bool
+    
+    override class var layerClass: AnyClass {
+        return CAMetalLayer.self
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override init(frame: CGRect) {
-        super.init(frame: frame)
         
-        metalLayer = CAMetalLayer()
+        drawableSizeShouldUpdate = true
+        super.init(frame: frame)
+        metalLayer = layer as? CAMetalLayer
+        metalLayer.frame = frame
         renderer = QGHWDMetalRenderer(metalLayer: metalLayer)
         //important!
         metalLayer.isOpaque = false
         metalLayer.contentsScale = UIScreen.main.scale
         metalLayer.pixelFormat = .bgra8Unorm
         metalLayer.framebufferOnly = true
-        metalLayer.frame = bounds
-        layer.addSublayer(metalLayer)
+    }
+    
+    override func didMoveToWindow() {
+        superview?.didMoveToWindow()
+        drawableSizeShouldUpdate = true
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        drawableSizeShouldUpdate = true
     }
     
     deinit {
@@ -55,6 +69,13 @@ class QGHWDMetalView: UIView {
         guard window != nil else {
             onMetalViewUnavailable()
             return
+        }
+        //update drawable size if need
+        if drawableSizeShouldUpdate {
+            let nativeScale = window!.screen.nativeScale
+            let drawableSize = CGSize(width: bounds.width*nativeScale, height: bounds.height*nativeScale)
+            metalLayer.drawableSize = drawableSize
+            drawableSizeShouldUpdate = false
         }
         renderer.render(pixelBuffer: pixelBuffer, metalLayer: metalLayer)
     }

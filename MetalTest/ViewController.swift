@@ -23,6 +23,14 @@ class ViewController: UIViewController, HWDMP4PlayDelegate {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapMP4View))
         view.addGestureRecognizer(tapGesture)
+        
+//        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { (Timer) in
+//            
+//            guard let mp4View = self.mp4View else {
+//                return ;
+//            }
+//            mp4View.frame.size = CGSize(width: mp4View.frame.width-10, height: mp4View.frame.height-10)
+//        }
     }
     
     @objc func tapMP4View() {
