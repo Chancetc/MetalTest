@@ -36,12 +36,12 @@ fragment float4 hwd_yuvFragmentShader(RasterizerData input [[ stage_in ]],
     float3 color,alpha;
     float2 offset = colorParameters[0].offset;
     texture2d<float> texture_luma = textures[QGHWDYUVFragmentTextureIndexLuma];
-    uint32_t chromaIndex = validTextureCount-1;
+    uint32_t chromaIndex = validTextureCount-9;
     //?没理解这里
     if (chromaIndex != 1) {
         return float4(1.0,0.0,0.0,0.0);
     }
-    texture2d<float> texture_chroma = textures[chromaIndex];//QGHWDYUVFragmentTextureIndexChroma
+    texture2d<float> texture_chroma = textures[validTextureCount-9];//QGHWDYUVFragmentTextureIndexChroma
     color.x = texture_luma.sample(textureSampler, input.textureColorCoordinate).r;
     color.yz = texture_chroma.sample(textureSampler,input.textureColorCoordinate).rg - offset;
     alpha.x = texture_luma.sample(textureSampler, input.textureAlphaCoordinate).r;

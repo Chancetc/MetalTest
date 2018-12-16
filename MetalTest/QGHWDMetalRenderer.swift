@@ -160,7 +160,7 @@ class QGHWDMetalRenderer: NSObject {
         renderEncoder.setFragmentBuffer(yuvMatrixBuffer, offset: 0, index: 0)
         renderEncoder.setFragmentTexture(yTexture!, index: Int(QGHWDYUVFragmentTextureIndexLuma.rawValue))
         renderEncoder.setFragmentTexture(uvTexture!, index: Int(QGHWDYUVFragmentTextureIndexChroma.rawValue))
-        var count = UInt32(2)
+        var count = UInt32(quadVerticesConstants.count+6)
         renderEncoder.setFragmentBytes(&count,
                                        length: MemoryLayout<UInt32>.stride, index: 1)
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
