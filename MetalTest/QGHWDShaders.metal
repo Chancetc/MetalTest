@@ -18,6 +18,14 @@ typedef struct {
     float2 textureAlphaCoordinate;
 } RasterizerData;
 
+float3 RGBColorFromYuvTextures(sampler textureSampler, float2 coordinate, texture2d<float> texture_luma, texture2d<float> texture_chroma, matrix_float3x3 rotationMatrix, float2 offset) {
+    
+    float3 color;
+    color.x = texture_luma.sample(textureSampler, coordinate).r;
+    color.yz = texture_chroma.sample(textureSampler, coordinate).rg - offset;
+    return float3(rotationMatrix * color);
+}
+
 vertex RasterizerData hwd_vertexShader(uint vertexID [[ vertex_id ]], constant QGHWDVertex *vertexArray [[ buffer(0) ]]) {
     
     RasterizerData out;
@@ -33,20 +41,15 @@ fragment float4 hwd_yuvFragmentShader(RasterizerData input [[ stage_in ]],
                                       constant int &validTextureCount [[ buffer(1) ]]) {
     
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-    float3 color,alpha;
-    float2 offset = colorParameters[0].offset;
     texture2d<float> texture_luma = textures[QGHWDYUVFragmentTextureIndexLuma];
-    uint32_t chromaIndex = validTextureCount-9;
-    //?没理解这里
-    if (chromaIndex != 1) {
-        return float4(1.0,0.0,0.0,0.0);
-    }
-    texture2d<float> texture_chroma = textures[validTextureCount-9];//QGHWDYUVFragmentTextureIndexChroma
-    color.x = texture_luma.sample(textureSampler, input.textureColorCoordinate).r;
-    color.yz = texture_chroma.sample(textureSampler,input.textureColorCoordinate).rg - offset;
-    alpha.x = texture_luma.sample(textureSampler, input.textureAlphaCoordinate).r;
-    alpha.yz = texture_chroma.sample(textureSampler,input.textureAlphaCoordinate).rg - offset;
-    
+    texture2d<float> texture_chroma = textures[QGHWDYUVFragmentTextureIndexChroma];
     matrix_float3x3 rotationMatrix = colorParameters[0].matrix;
-    return float4(float3(rotationMatrix * color),float3(rotationMatrix * alpha).r);
+    float2 offset = colorParameters[0].offset;
+    
+    float3 color = RGBColorFromYuvTextures(textureSampler, input.textureColorCoordinate, texture_luma, texture_chroma, rotationMatrix, offset);
+    float3 alpha = RGBColorFromYuvTextures(textureSampler, input.textureAlphaCoordinate, texture_luma, texture_chroma, rotationMatrix, offset);
+                                           
+    return float4(color ,alpha.r);
 }
+
+

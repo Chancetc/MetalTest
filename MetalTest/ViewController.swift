@@ -23,6 +23,9 @@ class ViewController: UIViewController, HWDMP4PlayDelegate {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapMP4View))
         view.addGestureRecognizer(tapGesture)
+        
+        let configPath = Bundle.main.path(forResource: "data", ofType: "json")
+        QGAdvancedGiftAttachmentsConfigParser.parse(configPath)
     }
     
     @objc func tapMP4View() {
