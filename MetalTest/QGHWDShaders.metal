@@ -16,6 +16,7 @@ typedef struct {
     float4 clipSpacePostion [[ position ]];
     float2 textureColorCoordinate;
     float2 textureAlphaCoordinate;
+    float2 textureMaskCoordinate;
 } RasterizerData;
 
 float3 RGBColorFromYuvTextures(sampler textureSampler, float2 coordinate, texture2d<float> texture_luma, texture2d<float> texture_chroma, matrix_float3x3 rotationMatrix, float2 offset) {
@@ -48,8 +49,10 @@ fragment float4 hwd_yuvFragmentShader(RasterizerData input [[ stage_in ]],
     
     float3 color = RGBColorFromYuvTextures(textureSampler, input.textureColorCoordinate, texture_luma, texture_chroma, rotationMatrix, offset);
     float3 alpha = RGBColorFromYuvTextures(textureSampler, input.textureAlphaCoordinate, texture_luma, texture_chroma, rotationMatrix, offset);
+    
+    float4 mask = textures[validTextureCount-1].sample(textureSampler, input.textureMaskCoordinate);
                                            
-    return float4(color ,alpha.r);
+    return float4(color ,alpha.r) + (validTextureCount-2)*mask;
 }
 
 

@@ -16,6 +16,7 @@ typedef struct {
     packed_float4 position;
     packed_float2 textureColorCoordinate;
     packed_float2 textureAlphaCoordinate;
+    packed_float2 textureMaskCoordinate;
 } QGHWDVertex;
 
 struct ColorParameters {

@@ -51,6 +51,8 @@ NSInteger const QGMP4HWDMaxFPS = 60;
 
 @property (nonatomic, strong) QGHWDMetalView *HWDMetalView;
 
+@property (nonatomic, strong) QGAdvancedGiftAttachmentsConfigModel *attachmentsModel;
+
 //标记是否结束
 @property (nonatomic, assign) BOOL isFinish;
 
@@ -91,6 +93,10 @@ NSInteger const QGMP4HWDMaxFPS = 60;
 }
 
 - (void)playHWDMP4:(NSString *)filePath fps:(NSInteger)fps blendMode:(QGHWDTextureBlendMode)mode delegate:(id<HWDMP4PlayDelegate>)delegate {
+    [self playHWDMP4:filePath fps:fps blendMode:mode delegate:delegate attachments:nil];
+}
+
+- (void)playHWDMP4:(NSString *)filePath fps:(NSInteger)fps blendMode:(QGHWDTextureBlendMode)mode delegate:(id<HWDMP4PlayDelegate>)delegate attachments:(QGAdvancedGiftAttachmentsConfigModel*)attachment {
     
     //QG_Info(MODULE_DECODE, @"playHWDMP4:%@ fps:%@",filePath,@(fps));
     
@@ -110,6 +116,7 @@ NSInteger const QGMP4HWDMaxFPS = 60;
     self.fileInfo.filePath = filePath;
     
     self.HWDFps = fps;
+    self.attachmentsModel = attachment;
     
     //callback
     self.MP4PlayDelegate = delegate;
@@ -194,7 +201,8 @@ NSInteger const QGMP4HWDMaxFPS = 60;
             nextFrame.duration = 1000/(double)fps;
             //QG_Debug(MODULE_DECODE, @"display frame:%@, has frameBuffer:%@",@(nextIndex),@(nextFrame.pixelBuffer != nil));
 //            [self.HWDOpenGLView displayPixelBuffer:nextFrame.pixelBuffer];
-            [self.HWDMetalView displayWithPixelBuffer:nextFrame.pixelBuffer];
+            QGAdvancedGiftAttachmentsFrameModel *attachment = self.attachmentsModel.frames[@(nextFrame.frameIndex)];
+            [self.HWDMetalView displayWithPixelBuffer:nextFrame.pixelBuffer attachment:attachment];
 //            [self.HWDMetalView displayWithImageName:@"31"];
             self.currentHWDFrameInstance = nextFrame;
             
@@ -410,6 +418,14 @@ NSInteger const QGMP4HWDMaxFPS = 60;
 
 - (BOOL)isFinish {
     return [objc_getAssociatedObject(self, @"isFinish") boolValue];
+}
+
+- (void)setAttachmentsModel:(QGAdvancedGiftAttachmentsConfigModel *)attachmentsModel {
+    objc_setAssociatedObject(self, @"attachmentsModel", attachmentsModel, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (QGAdvancedGiftAttachmentsConfigModel *)attachmentsModel {
+    return objc_getAssociatedObject(self, @"attachmentsModel");
 }
 
 @end

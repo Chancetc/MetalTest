@@ -64,7 +64,7 @@ class QGHWDMetalView: UIView {
         onMetalViewUnavailable()
     }
     
-    @objc func display(pixelBuffer: CVPixelBuffer) {
+    @objc func display(pixelBuffer: CVPixelBuffer, attachment: QGAdvancedGiftAttachmentsFrameModel?) {
         
         guard window != nil else {
             onMetalViewUnavailable()
@@ -77,7 +77,7 @@ class QGHWDMetalView: UIView {
             metalLayer.drawableSize = drawableSize
             drawableSizeShouldUpdate = false
         }
-        renderer.render(pixelBuffer: pixelBuffer, metalLayer: metalLayer)
+        renderer.render(pixelBuffer: pixelBuffer, metalLayer: metalLayer, attachment:attachment)
     }
     
     func onMetalViewUnavailable() {

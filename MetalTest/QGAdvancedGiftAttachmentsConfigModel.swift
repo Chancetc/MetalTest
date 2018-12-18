@@ -8,6 +8,15 @@
 
 import Foundation
 
+//预定义变量
+enum QGAGAttachmentVariable: String {
+    
+    case AnchorName = "[textAnchor]"
+    case UserName = "[textUser]"
+    case AnchorAvatar = "[imgAnchor]"
+    case UserAvatar = "[imgUser]"
+}
+
 //资源适配类型
 enum QGAGAttachmentFitType: String {
     case FitXY = "fitXY"            //按指定尺寸缩放
@@ -15,10 +24,8 @@ enum QGAGAttachmentFitType: String {
 }
 
 enum QGAGAttachmentSourceType: String {
-    case UserName = "textUser"          //用户昵称
-    case AnchorName = "textAnchor"      //主播昵称
-    case AnchorAvatar = "imgAnchor"     //主播头像
-    case UserAvatar = "imgUser"         //用户头像
+    case TextStr = "textStr"          //文字
+    case ImgUrl = "imgUrl"            //图片
 }
 
 enum QGAGAttachmentMaskType: String {
@@ -38,7 +45,8 @@ class QGAdvancedGiftAttachmentsSourceModel: NSObject {
     var textStr: String?
     var index = 0
     var fitType: QGAGAttachmentFitType = .FitXY
-    var sourceType: QGAGAttachmentSourceType = .UserAvatar
+    var sourceType: QGAGAttachmentSourceType = .TextStr
+    var sourceImage: UIImage!
     
     override init() {
         super.init()
@@ -123,45 +131,48 @@ class QGAdvancedGiftAttachmentsMaskModel: NSObject {
     func maskImageForFrame(_ index: Int, directory: NSString) -> UIImage? {
         
         guard let maskFrameModel = maskFrames[index] else { return nil }
-        guard let totalMask = UIImage(contentsOfFile:directory.appendingPathComponent(maskName)) else { return nil }
-//        let mask = totalMask.rect
-        return nil
+        guard let totalMask = UIImage(named: maskName) else { return nil }
+        let clippedRect = CGRect(origin: maskFrameModel.origin, size: maskFrameModel.size)
+        guard let cgImage = totalMask.cgImage else { return nil }
+        guard let imageRef = cgImage.cropping(to: clippedRect) else { return nil }
+        let image = UIImage(cgImage: imageRef, scale: totalMask.scale, orientation: totalMask.imageOrientation)
+        return image
+    }
+}
+
+//MARK: -- attachment
+class QGAdvancedGiftAttachmentModel: NSObject {
+    
+    var index: Int = 0  //绘制顺序
+    var origin: CGPoint
+    var size: CGSize
+    var alpha: Float = 1.0
+    var sourceId: String = ""
+    var sourceModel: QGAdvancedGiftAttachmentsSourceModel!
+    var maskId: String = ""
+    var maskModel: QGAdvancedGiftAttachmentsMaskModel!
+    
+    override init() {
+        origin = CGPoint(x: 0.0, y: 0.0)
+        size = CGSize(width: 0.0, height: 0.0)
+        super.init()
+    }
+    
+    convenience init(index: Int, origin: CGPoint, size: CGSize, alpha: Float, sourceId: String, maskId: String) {
+        
+        self.init()
+        self.index = index
+        self.origin = origin
+        self.size = size
+        self.alpha = alpha
+        self.sourceId = sourceId
+        self.maskId = maskId
     }
 }
 
 //MARK: - 帧信息
 class QGAdvancedGiftAttachmentsFrameModel: NSObject {
-    
-    //MARK: -- attachment
-    class QGAdvancedGiftAttachmentModel: NSObject {
-        
-        var index: Int = 0  //绘制顺序
-        var origin: CGPoint
-        var size: CGSize
-        var alpha: Float = 1.0
-        var sourceId: String = ""
-        var sourceModel: QGAdvancedGiftAttachmentsSourceModel!
-        var maskId: String = ""
-        var maskModel: QGAdvancedGiftAttachmentsMaskModel!
-        
-        override init() {
-            origin = CGPoint(x: 0.0, y: 0.0)
-            size = CGSize(width: 0.0, height: 0.0)
-            super.init()
-        }
-        
-        convenience init(index: Int, origin: CGPoint, size: CGSize, alpha: Float, sourceId: String, maskId: String) {
-            
-            self.init()
-            self.index = index
-            self.origin = origin
-            self.size = size
-            self.alpha = alpha
-            self.sourceId = sourceId
-            self.maskId = maskId
-        }
-    }
-    
+
     var index: Int = 0
     var attachments: [QGAdvancedGiftAttachmentModel] = []
     
@@ -214,11 +225,17 @@ class QGAdvancedGiftAttachmentsConfigModel: NSObject {
     
     var sources: [String:QGAdvancedGiftAttachmentsSourceModel] = [String:QGAdvancedGiftAttachmentsSourceModel]()
     var masks: [String:QGAdvancedGiftAttachmentsMaskModel] = [String:QGAdvancedGiftAttachmentsMaskModel]()
-    var frames: [Int: QGAdvancedGiftAttachmentsFrameModel] = [Int: QGAdvancedGiftAttachmentsFrameModel]()
+    @objc var frames: [Int: QGAdvancedGiftAttachmentsFrameModel] = [Int: QGAdvancedGiftAttachmentsFrameModel]()
 
     class func modelFromConfig(_ dic: Dictionary<String, Any>?) -> QGAdvancedGiftAttachmentsConfigModel? {
         
         return QGAdvancedGiftAttachmentsConfigModel(dic)
+    }
+    
+    @objc func attachmentsAtFrame(_ index: Int) -> [QGAdvancedGiftAttachmentModel]? {
+        
+        guard let frame = frames[index] else { return nil }
+        return frame.attachments
     }
     
     init?(_ dic: Dictionary<String, Any>?) {

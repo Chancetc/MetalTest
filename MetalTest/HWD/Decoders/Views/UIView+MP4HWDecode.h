@@ -10,7 +10,7 @@
 #import "QGMP4AnimatedImageFrame.h"
 #import "QGBaseAnimatedImageFrame+Displaying.h"
 
-@class QGMP4AnimatedImageFrame;
+@class QGMP4AnimatedImageFrame, QGAdvancedGiftAttachmentsConfigModel;
 
 extern NSInteger const QGMP4HWDDefaultFPS;      //默认fps 25
 extern NSInteger const QGMP4HWDMinFPS;          //最小fps 1
@@ -97,6 +97,8 @@ typedef NS_ENUM(NSInteger, QGHWDTextureBlendMode){
  @param delegate <#delegate description#>
  */
 - (void)playHWDMP4:(NSString *)filePath fps:(NSInteger)fps blendMode:(QGHWDTextureBlendMode)mode delegate:(id<HWDMP4PlayDelegate>)delegate;
+
+- (void)playHWDMP4:(NSString *)filePath fps:(NSInteger)fps blendMode:(QGHWDTextureBlendMode)mode delegate:(id<HWDMP4PlayDelegate>)delegate attachments:(QGAdvancedGiftAttachmentsConfigModel*)attachment;
 
 /**
  stop the playing and decoding peocess, and abandon contexts.
