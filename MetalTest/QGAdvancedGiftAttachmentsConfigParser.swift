@@ -99,9 +99,9 @@ class QGAdvancedGiftAttachmentsConfigParser: NSObject {
                 let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height))
                 let img = renderer.image { ctx in
                     let paragraphStyle = NSMutableParagraphStyle()
-                    paragraphStyle.alignment = .left
+                    paragraphStyle.alignment = .center
                     paragraphStyle.lineBreakMode = .byTruncatingTail
-                    let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: height*0.9), NSAttributedString.Key.paragraphStyle: paragraphStyle,NSAttributedString.Key.foregroundColor: color]
+                    let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: height*0.8), NSAttributedString.Key.paragraphStyle: paragraphStyle,NSAttributedString.Key.foregroundColor: color]
                     textStr.draw(with: CGRect(x: 0, y: 0, width: width, height: height), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
                 }
                 source.sourceImage = img

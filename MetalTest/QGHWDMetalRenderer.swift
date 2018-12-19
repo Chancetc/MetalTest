@@ -77,9 +77,13 @@ class QGHWDMetalRenderer: NSObject {
     var vertexBuffer: MTLBuffer!
     var yuvMatrixBuffer: MTLBuffer!
     var pipelineState: MTLRenderPipelineState! //This will keep track of the compiled render pipeline you’re about to create.
+    
+    var attachmentSourcePipelineStates: [QGAGAttachmentMaskType: MTLRenderPipelineState] = [QGAGAttachmentMaskType: MTLRenderPipelineState]()
+    
     var commandQueue: MTLCommandQueue!
     var vertexCount: Int!
     var videoTextureCache: CVMetalTextureCache?
+    var library: MTLLibrary!
     
     init(metalLayer: CAMetalLayer) {
         
@@ -87,11 +91,11 @@ class QGHWDMetalRenderer: NSObject {
         super.init()
         QGHWDMetalRenderer.device = MTLCreateSystemDefaultDevice()
         metalLayer.device = QGHWDMetalRenderer.device
-        setupPipelineState(metalLayer)
+        setupConstants()
+        setupPipelineStates(metalLayer)
     }
     
-    func setupPipelineState(_ metalLayer: CAMetalLayer) {
-        
+    func setupConstants() {
         //buffers
         let vertices = suitableQuadVertices
         let dataSize = vertices.count * MemoryLayout.size(ofValue: vertices[0])
@@ -101,23 +105,71 @@ class QGHWDMetalRenderer: NSObject {
         let yuvMatrixs = [ColorParameters(matrix: colorConversionMatrix601FullRangeDefault, offset: packed_float2(0.5, 0.5))]
         let yuvMatrixsDataSize = yuvMatrixs.count * MemoryLayout.size(ofValue: yuvMatrixs[0])
         yuvMatrixBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: yuvMatrixs, length: yuvMatrixsDataSize, options: [])
+    }
+    
+    func setupPipelineStates(_ metalLayer: CAMetalLayer) {
         
-        let defaultLibrary = QGHWDMetalRenderer.device.makeDefaultLibrary()
-        let vertexProgram = defaultLibrary?.makeFunction(name: hwdVertexFunctionName)
-        let fragmentProgram = defaultLibrary?.makeFunction(name: hwdYUVFragmentFunctionName)
-        
+        guard let defaultLibrary = QGHWDMetalRenderer.device.makeDefaultLibrary() else {
+            return
+        }
+        library = defaultLibrary
+        let vertexProgram = defaultLibrary.makeFunction(name: hwdVertexFunctionName)
+        let fragmentProgram = defaultLibrary.makeFunction(name: hwdYUVFragmentFunctionName)
         let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = metalLayer.pixelFormat
-        
-        pipelineState = try! QGHWDMetalRenderer.device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
+        pipelineState = try? QGHWDMetalRenderer.device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         
         commandQueue = QGHWDMetalRenderer.device.makeCommandQueue()
         let err = CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, QGHWDMetalRenderer.device, nil, &videoTextureCache)
         guard err == noErr else {
             return
         }
+        
+        _ = attachmentPipelineStateForMaskType(.SrceIn, metalLayer: metalLayer)
+        _ = attachmentPipelineStateForMaskType(.SrcOut, metalLayer: metalLayer)
+        _ = attachmentPipelineStateForMaskType(.SrcMix, metalLayer: metalLayer)
+    }
+    
+    func attachmentPipelineStateForMaskType(_ maskType: QGAGAttachmentMaskType, metalLayer: CAMetalLayer) -> MTLRenderPipelineState? {
+        
+        if let pipelineState = attachmentSourcePipelineStates[maskType] {
+            return pipelineState
+        }
+        if let attachmentPS = attachmentPipelineStateWithMaskType(maskType, metalLayer: metalLayer) {
+            attachmentSourcePipelineStates[maskType] = attachmentPS
+            return attachmentPS
+        }
+        return nil
+    }
+    
+    func attachmentPipelineStateWithMaskType(_ maskType: QGAGAttachmentMaskType, metalLayer: CAMetalLayer) ->  MTLRenderPipelineState? {
+        
+        let attachmentVertexProgram = library?.makeFunction(name: hwdAttachmentVertexFunctionName)
+        var attachmentFragmentProgram: MTLFunction?
+        switch maskType {
+            case .SrceIn:
+                attachmentFragmentProgram = library?.makeFunction(name: hwdAttachmentSourceInFragmentFunctionName)
+            case .SrcOut:
+                attachmentFragmentProgram = library?.makeFunction(name: hwdAttachmentSourceOutFragmentFunctionName)
+            case .SrcMix:
+                attachmentFragmentProgram = library?.makeFunction(name: hwdAttachmentSourceMixFragmentFunctionName)
+        }
+        
+        let attachmentPipelineStateDescriptor = MTLRenderPipelineDescriptor()
+        attachmentPipelineStateDescriptor.vertexFunction = attachmentVertexProgram
+        attachmentPipelineStateDescriptor.fragmentFunction = attachmentFragmentProgram
+        attachmentPipelineStateDescriptor.colorAttachments[0].pixelFormat = metalLayer.pixelFormat
+        attachmentPipelineStateDescriptor.colorAttachments[0].isBlendingEnabled = true
+        attachmentPipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = .add
+        attachmentPipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = .add
+        attachmentPipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+        attachmentPipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+        attachmentPipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+        attachmentPipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        let attachmentPipelineState = try? QGHWDMetalRenderer.device.makeRenderPipelineState(descriptor: attachmentPipelineStateDescriptor)
+        return attachmentPipelineState
     }
     
     func render(pixelBuffer: CVPixelBuffer?, metalLayer:CAMetalLayer?, attachment: QGAdvancedGiftAttachmentsFrameModel?) {
@@ -152,7 +204,6 @@ class QGHWDMetalRenderer: NSObject {
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture //which returns the texture in which you need to draw in order for something to appear on the screen.
         renderPassDescriptor.colorAttachments[0].loadAction = .clear //“set the texture to the clear color before doing any drawing,”
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        
         let commandBuffer = commandQueue.makeCommandBuffer()!
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         renderEncoder.setRenderPipelineState(pipelineState)
@@ -172,10 +223,39 @@ class QGHWDMetalRenderer: NSObject {
         renderEncoder.setFragmentBytes(&count,
                                        length: MemoryLayout<UInt32>.stride, index: 1)
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
-        renderEncoder.endEncoding()
         
+        drawAttachments(attachment: attachment, renderEncoder: renderEncoder, metalLayer: metalLayer!)
+        renderEncoder.endEncoding()
         commandBuffer.present(drawable)
         commandBuffer.commit()
+    }
+    
+    func drawAttachments(attachment: QGAdvancedGiftAttachmentsFrameModel?, renderEncoder: MTLRenderCommandEncoder?, metalLayer:CAMetalLayer) {
+        
+        guard let attachment = attachment, let renderEncoder = renderEncoder else { return }
+        guard attachment.attachments.count > 0 else {
+            return
+        }
+        
+        for attachmentModel in attachment.attachments {
+            let model = QGHWDAttachmentNode(device: QGHWDMetalRenderer.device, model: attachmentModel, frameIndex:attachment.index)
+            guard let sourcePipelinState = attachmentPipelineStateForMaskType(attachmentModel.maskModel.maskType, metalLayer: metalLayer) else {
+                continue
+            }
+            renderEncoder.setRenderPipelineState(sourcePipelinState)
+            guard let sourceTexture = model.sourceTexture,
+                let maskTexture = model.maskTexture,
+                let vertexBuffer = model.vertexBuffer,
+                let fragmentBuffer = model.attachmentParamsBuffer else {
+                continue
+            }
+            
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+            renderEncoder.setFragmentBuffer(fragmentBuffer, offset: 0, index: 0)
+            renderEncoder.setFragmentTexture(sourceTexture, index: 0)
+            renderEncoder.setFragmentTexture(maskTexture, index: 1)
+            renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: model.vertexCount, instanceCount: 1)
+        }
     }
 }
 

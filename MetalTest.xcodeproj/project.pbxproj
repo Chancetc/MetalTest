@@ -90,6 +90,8 @@
 		6345120621C7476E00509874 /* YYReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 634511B421C7476E00509874 /* YYReachability.m */; };
 		6345120821C749A800509874 /* QGAdvancedGiftAttachmentsConfigParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6345120721C749A800509874 /* QGAdvancedGiftAttachmentsConfigParser.swift */; };
 		6345120A21C749F600509874 /* QGAdvancedGiftAttachmentsConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6345120921C749F600509874 /* QGAdvancedGiftAttachmentsConfigModel.swift */; };
+		63F232C721C9EB5500EFD5C2 /* QGHWDAttachmentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F232C621C9EB5500EFD5C2 /* QGHWDAttachmentNode.swift */; };
+		63F232C921CA1B9100EFD5C2 /* QGHWDAttachmentShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 63F232C821CA1B9100EFD5C2 /* QGHWDAttachmentShaders.metal */; };
 		BD7F2DE821C1377F000F438A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2DE721C1377F000F438A /* AppDelegate.swift */; };
 		BD7F2DEA21C1377F000F438A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2DE921C1377F000F438A /* ViewController.swift */; };
 		BD7F2DED21C1377F000F438A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD7F2DEB21C1377F000F438A /* Main.storyboard */; };
@@ -300,6 +302,8 @@
 		634511B521C7476E00509874 /* YYSentinel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYSentinel.h; sourceTree = "<group>"; };
 		6345120721C749A800509874 /* QGAdvancedGiftAttachmentsConfigParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGAdvancedGiftAttachmentsConfigParser.swift; sourceTree = "<group>"; };
 		6345120921C749F600509874 /* QGAdvancedGiftAttachmentsConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGAdvancedGiftAttachmentsConfigModel.swift; sourceTree = "<group>"; };
+		63F232C621C9EB5500EFD5C2 /* QGHWDAttachmentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGHWDAttachmentNode.swift; sourceTree = "<group>"; };
+		63F232C821CA1B9100EFD5C2 /* QGHWDAttachmentShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = QGHWDAttachmentShaders.metal; sourceTree = "<group>"; };
 		BD7F2DE421C1377F000F438A /* MetalTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD7F2DE721C1377F000F438A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BD7F2DE921C1377F000F438A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -680,11 +684,13 @@
 				BD7F2DF021C13782000F438A /* LaunchScreen.storyboard */,
 				BD7F2DF321C13782000F438A /* Info.plist */,
 				BD7F2DF921C13AB8000F438A /* QGHWDShaders.metal */,
+				63F232C821CA1B9100EFD5C2 /* QGHWDAttachmentShaders.metal */,
 				BD7F2E0221C21948000F438A /* QGHWDShaderTypes.h */,
 				BD7F2E0D21C249EA000F438A /* QGHWDMetalView.swift */,
 				BD7F2E0F21C24E4A000F438A /* QGHWDMetalRenderer.swift */,
 				6345120721C749A800509874 /* QGAdvancedGiftAttachmentsConfigParser.swift */,
 				6345120921C749F600509874 /* QGAdvancedGiftAttachmentsConfigModel.swift */,
+				63F232C621C9EB5500EFD5C2 /* QGHWDAttachmentNode.swift */,
 				BD7F2E9521C26508000F438A /* resource */,
 				BD7F2E4921C264AE000F438A /* HWD */,
 				6345110421C7475D00509874 /* Vender */,
@@ -963,6 +969,7 @@
 				634511CA21C7476E00509874 /* YYTextMagnifier.m in Sources */,
 				634511F621C7476E00509874 /* NSNotificationCenter+YYAdd.m in Sources */,
 				634511E921C7476E00509874 /* UIControl+YYAdd.m in Sources */,
+				63F232C721C9EB5500EFD5C2 /* QGHWDAttachmentNode.swift in Sources */,
 				634511BC21C7476E00509874 /* YYSpriteSheetImage.m in Sources */,
 				BD7F2E8E21C264AF000F438A /* QGAnimatedImageDecodeManager.m in Sources */,
 				634511FF21C7476E00509874 /* YYTransaction.m in Sources */,
@@ -997,6 +1004,7 @@
 				634511BA21C7476E00509874 /* YYImageCache.m in Sources */,
 				BD7F2E8921C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.m in Sources */,
 				634511F221C7476E00509874 /* NSTimer+YYAdd.m in Sources */,
+				63F232C921CA1B9100EFD5C2 /* QGHWDAttachmentShaders.metal in Sources */,
 				634511B721C7476E00509874 /* YYCache.m in Sources */,
 				634511CB21C7476E00509874 /* YYTextContainerView.m in Sources */,
 				BD7F2DE821C1377F000F438A /* AppDelegate.swift in Sources */,
