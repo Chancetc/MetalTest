@@ -76,5 +76,8 @@ fragment float4 hwdAttachment_fragmentShader_srcMix(HWDAttachmentRasterizerData 
     float4 source = textures[0].sample(textureSampler, input.sourceTextureCoordinate);
     float4 mask = textures[1].sample(textureSampler, input.maskTextureCoordinate);
     float2 blend = float2(1.0-mask.a, mask.a);
-    return float4(source.r*blend.x+mask.r*blend.y, source.g*blend.x+mask.g*blend.y, source.b*blend.x+mask.b*blend.y, mask.a>0.1?1.0:0.0);
+    if (mask.a < 0.1) {
+        return float4(0.0);
+    }
+    return float4(source.r*blend.x+mask.r*blend.y, source.g*blend.x+mask.g*blend.y, source.b*blend.x+mask.b*blend.y,1.0);
 }
