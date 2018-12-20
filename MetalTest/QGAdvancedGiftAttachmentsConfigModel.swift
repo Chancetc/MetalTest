@@ -28,6 +28,10 @@ enum QGAGAttachmentSourceType: String {
     case ImgUrl = "imgUrl"            //图片
 }
 
+enum QGAGAttachmentSourceStyle: String {
+    case BoldText = "b"                 //粗体
+}
+
 enum QGAGAttachmentMaskType: String {
     case SrcOut = "srcOut"  //表示去除遮挡区域
     case SrceIn = "srcIn"   //表示根据遮罩形状裁剪
@@ -43,6 +47,8 @@ class QGAdvancedGiftAttachmentsSourceModel: NSObject {
     var height: Float = 0.0
     var color: UIColor?
     var textStr: String?
+    var style: QGAGAttachmentSourceStyle?
+    
     var index = 0
     var fitType: QGAGAttachmentFitType = .FitXY
     var sourceType: QGAGAttachmentSourceType = .TextStr
@@ -52,7 +58,7 @@ class QGAdvancedGiftAttachmentsSourceModel: NSObject {
         super.init()
     }
     
-    convenience init(srcId: String, url: String?, w: Float, h: Float, color: UIColor?, text: String?, indexOfSource: Int, fitTypeOfSource: QGAGAttachmentFitType, sourceTypeOfSource: QGAGAttachmentSourceType) {
+    convenience init(srcId: String, url: String?, w: Float, h: Float, color: UIColor?, text: String?, style: QGAGAttachmentSourceStyle?, indexOfSource: Int, fitTypeOfSource: QGAGAttachmentFitType, sourceTypeOfSource: QGAGAttachmentSourceType) {
 
         self.init()
         sourceId = srcId
@@ -64,6 +70,7 @@ class QGAdvancedGiftAttachmentsSourceModel: NSObject {
         fitType = fitTypeOfSource
         sourceType = sourceTypeOfSource
         self.color = color
+        self.style = style
     }
 }
 
@@ -297,7 +304,11 @@ class QGAdvancedGiftAttachmentsConfigModel: NSObject {
             guard let fitTypeStr = sourceDic["fitType"] as? String else { continue }
             guard let fitType = QGAGAttachmentFitType(rawValue: fitTypeStr) else { continue }
             let text = sourceDic["textStr"] as? String
-            var color: UIColor?
+            var style: QGAGAttachmentSourceStyle? = nil
+            if let styleStr = sourceDic["style"] as? String, let s = QGAGAttachmentSourceStyle(rawValue: styleStr) {
+                style = s
+            }
+            var color: UIColor? = nil
             if let colorStr = sourceDic["color"] as? String {
                 color = UIColor(hexString: colorStr)
             }
@@ -305,7 +316,7 @@ class QGAdvancedGiftAttachmentsConfigModel: NSObject {
             guard let sourceTypeStr = sourceDic["srcType"] as? String else { continue }
             guard let sourceType = QGAGAttachmentSourceType(rawValue: sourceTypeStr) else { continue }
             
-            let sourceModel = QGAdvancedGiftAttachmentsSourceModel(srcId: srcId, url: imgUrl, w: width, h: height, color:color, text: text, indexOfSource: index, fitTypeOfSource: fitType, sourceTypeOfSource: sourceType)
+            let sourceModel = QGAdvancedGiftAttachmentsSourceModel(srcId: srcId, url: imgUrl, w: width, h: height, color:color, text: text, style:style, indexOfSource: index, fitTypeOfSource: fitType, sourceTypeOfSource: sourceType)
             sourcesDict[srcId] = sourceModel
         }
         

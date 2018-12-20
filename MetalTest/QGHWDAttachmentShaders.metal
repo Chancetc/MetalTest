@@ -5,6 +5,7 @@
 //  Created by Chanceguo on 2018/12/19.
 //  Copyright © 2018 Tencent. All rights reserved.
 //
+//specification:https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf
 
 #include <metal_stdlib>
 #import "QGHWDShaderTypes.h"
@@ -45,11 +46,7 @@ fragment float4 hwdAttachment_fragmentShader_srcIn(HWDAttachmentRasterizerData i
     float4 source = textures[0].sample(textureSampler, input.sourceTextureCoordinate);
     float4 mask = textures[1].sample(textureSampler, input.maskTextureCoordinate);
     float alpha = params[0].alpha;
-    if (mask.a < 0.1) {
-        return float4(0.0);
-    } else {
-        return float4(source.rgb,source.a*alpha);
-    }
+    return float4(source.rgb,source.a*alpha*(1-mask.a));
 }
 
 fragment float4 hwdAttachment_fragmentShader_srcOut(HWDAttachmentRasterizerData input [[ stage_in ]],
@@ -60,11 +57,7 @@ fragment float4 hwdAttachment_fragmentShader_srcOut(HWDAttachmentRasterizerData 
     float4 source = textures[0].sample(textureSampler, input.sourceTextureCoordinate);
     float4 mask = textures[1].sample(textureSampler, input.maskTextureCoordinate);
     float alpha = params[0].alpha;
-    if (mask.a < 0.1) {
-        return float4(source.rgb,source.a*alpha);
-    } else {
-        return float4(0.0);
-    }
+    return float4(source.rgb,source.a*alpha*(1-mask.a));
 }
 
 fragment float4 hwdAttachment_fragmentShader_srcMix(HWDAttachmentRasterizerData input [[ stage_in ]],
@@ -72,12 +65,9 @@ fragment float4 hwdAttachment_fragmentShader_srcMix(HWDAttachmentRasterizerData 
                                                    constant QGHWDAttachmentFragmentParameter *params [[ buffer(0) ]]) {
     
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-//    float alpha = params[0].alpha;
     float4 source = textures[0].sample(textureSampler, input.sourceTextureCoordinate);
     float4 mask = textures[1].sample(textureSampler, input.maskTextureCoordinate);
     float2 blend = float2(1.0-mask.a, mask.a);
-    if (mask.a < 0.1) {
-        return float4(0.0);
-    }
-    return float4(source.r*blend.x+mask.r*blend.y, source.g*blend.x+mask.g*blend.y, source.b*blend.x+mask.b*blend.y,1.0);
+    float4 color = source*blend.x+mask*blend.y;
+    return float4(color.rgb, step(0.05, mask.a)*color.a);
 }

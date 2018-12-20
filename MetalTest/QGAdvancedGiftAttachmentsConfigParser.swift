@@ -96,12 +96,14 @@ class QGAdvancedGiftAttachmentsConfigParser: NSObject {
                 }
                 
                 let width = CGFloat(source.width/2.0), height = CGFloat(source.height/2.0)
+                let rect = CGRect(x: 0, y: 0, width: width, height: height)
                 let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height))
+                let font =  getFontForString(NSString.init(string: textStr), fitIn: rect, designedFontSize: height*0.8, isBold: (source.style == QGAGAttachmentSourceStyle.BoldText))
                 let img = renderer.image { ctx in
                     let paragraphStyle = NSMutableParagraphStyle()
                     paragraphStyle.alignment = .center
                     paragraphStyle.lineBreakMode = .byTruncatingTail
-                    let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: height*0.8), NSAttributedString.Key.paragraphStyle: paragraphStyle,NSAttributedString.Key.foregroundColor: color]
+                    let attrs = [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: paragraphStyle,NSAttributedString.Key.foregroundColor: color]
                     textStr.draw(with: CGRect(x: 0, y: 0, width: width, height: height), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
                 }
                 source.sourceImage = img
@@ -115,5 +117,28 @@ class QGAdvancedGiftAttachmentsConfigParser: NSObject {
         dispatchGroup.notify(queue: .main) {
             completionBlock(true)
         }
+    }
+    
+    class func getFontForString(_ string:NSString?, fitIn rect:CGRect?, designedFontSize fz:CGFloat, isBold: Bool) -> UIFont {
+
+        var designedFont: UIFont
+        if isBold {
+            designedFont = UIFont.boldSystemFont(ofSize: fz)
+        } else {
+            designedFont = UIFont.systemFont(ofSize: fz)
+        }
+        guard let string = string, let rect = rect else { return designedFont }
+        var stringSize = string.size(withAttributes: [NSAttributedString.Key.font : designedFont])
+        var fontSize = fz
+        while stringSize.width > rect.width && fontSize > 2.0 {
+            fontSize = 0.9 * fontSize
+            if isBold {
+                designedFont = UIFont.boldSystemFont(ofSize: fontSize)
+            } else {
+                designedFont = UIFont.systemFont(ofSize: fontSize)
+            }
+            stringSize = string.size(withAttributes: [NSAttributedString.Key.font : designedFont])
+        }
+        return designedFont
     }
 }

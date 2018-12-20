@@ -37,25 +37,25 @@ public let colorConversionMatrix709Default = matrix_float3x3([
 //QGHWDVertex  顶点坐标+纹理坐标（rdb+alpha）
 private let quadVerticesConstants: [[Float]] = [
     //左侧alpha
-    [-1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0, 0.0, 1.0,
-     -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,  0.0, 0.0,
-     1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,  1.0, 1.0,
-     1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0,   1.0,0.0],
+    [-1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
+     -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
+     1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 0.5, 1.0,
+     1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.0],
     //右侧alpha
-    [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
-     -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0,
-     1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
-     1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 1.0, 0.0,   1.0,0.0],
+    [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.5, 1.0,
+     -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.0,
+     1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 1.0, 1.0,
+     1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 1.0, 0.0],
     //顶部alpha
-    [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 1.0,
-     -1.0, 1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0,
-     1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0,
-     1.0, 1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 0.0,   1.0,0.0],
+    [-1.0, -1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.5,
+     -1.0, 1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.0,
+     1.0, -1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.5,
+     1.0, 1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 0.0],
     //底部alpha
-    [-1.0, -1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 1.0, 0.0, 1.0,
-     -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0,
-     1.0, -1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 1.0,1.0, 1.0,
-     1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.5,   1.0,0.0],
+    [-1.0, -1.0, 0.0, 1.0, 0.0, 0.5, 0.0, 1.0,
+     -1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.5,
+     1.0, -1.0, 0.0, 1.0, 1.0, 0.5, 1.0, 1.0,
+     1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.5],
 ]
 
 extension matrix_float3x3 {
@@ -137,14 +137,14 @@ class QGHWDMetalRenderer: NSObject {
         if let pipelineState = attachmentSourcePipelineStates[maskType] {
             return pipelineState
         }
-        if let attachmentPS = attachmentPipelineStateWithMaskType(maskType, metalLayer: metalLayer) {
+        if let attachmentPS = steupAttachmentPipelineStateWithMaskType(maskType, metalLayer: metalLayer) {
             attachmentSourcePipelineStates[maskType] = attachmentPS
             return attachmentPS
         }
         return nil
     }
     
-    func attachmentPipelineStateWithMaskType(_ maskType: QGAGAttachmentMaskType, metalLayer: CAMetalLayer) ->  MTLRenderPipelineState? {
+    func steupAttachmentPipelineStateWithMaskType(_ maskType: QGAGAttachmentMaskType, metalLayer: CAMetalLayer) ->  MTLRenderPipelineState? {
         
         let attachmentVertexProgram = library?.makeFunction(name: hwdAttachmentVertexFunctionName)
         var attachmentFragmentProgram: MTLFunction?
@@ -165,7 +165,7 @@ class QGHWDMetalRenderer: NSObject {
         attachmentPipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = .add
         attachmentPipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = .add
         attachmentPipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
-        attachmentPipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+        attachmentPipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
         attachmentPipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         attachmentPipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
         let attachmentPipelineState = try? QGHWDMetalRenderer.device.makeRenderPipelineState(descriptor: attachmentPipelineStateDescriptor)
@@ -211,19 +211,7 @@ class QGHWDMetalRenderer: NSObject {
         renderEncoder.setFragmentBuffer(yuvMatrixBuffer, offset: 0, index: 0)
         renderEncoder.setFragmentTexture(yTexture!, index: Int(QGHWDYUVFragmentTextureIndexLuma.rawValue))
         renderEncoder.setFragmentTexture(uvTexture!, index: Int(QGHWDYUVFragmentTextureIndexChroma.rawValue))
-        var count = UInt32(2)
-        if let attachment = attachment, let attachmentObj = attachment.attachments.last, let maskImage = attachmentObj.maskModel.maskImageForFrame(attachment.index, directory: "./MetalTest/resource/752_1344") {
-            
-            if let texture = try? QGHWDMetalRenderer.loadTexture(image: maskImage) {
-                renderEncoder.setFragmentTexture(texture, index: 2)
-                count = UInt32(3)
-            }
-        }
-        
-        renderEncoder.setFragmentBytes(&count,
-                                       length: MemoryLayout<UInt32>.stride, index: 1)
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
-        
         drawAttachments(attachment: attachment, renderEncoder: renderEncoder, metalLayer: metalLayer!)
         renderEncoder.endEncoding()
         commandBuffer.present(drawable)
@@ -328,14 +316,12 @@ extension QGHWDMetalRenderer {
         guard let url = Bundle.main.url(forResource: imageName,
                                         withExtension: fileExtension)
             else {
-                print("Failed to load \(imageName)\n - loading from Assets Catalog")
                 return try textureLoader.newTexture(name: imageName, scaleFactor: 1.0,
                                                     bundle: Bundle.main, options: nil)
         }
         
         let texture = try textureLoader.newTexture(URL: url,
                                                    options: textureLoaderOptions)
-        print("loaded texture: \(url.lastPathComponent)")
         return texture
     }
 }

@@ -418,11 +418,10 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     @synchronized (self) {
         
         if (_isFinish) {
-            //QG_Info(MODULE_DECODE, @"already ended.");
             return ;
         }
-        [self clearContext];
         _isFinish = YES;
+        [self clearContext];
     }
 }
 

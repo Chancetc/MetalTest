@@ -30,7 +30,7 @@ class ViewController: UIViewController, HWDMP4PlayDelegate {
         if let attachmentConfigModel = attachConfigModel {
             
             let extraInfo = [QGAGAttachmentVariable.AnchorName.rawValue : "我是主播",
-                             QGAGAttachmentVariable.UserName.rawValue : "我是用户很长很长很长很长很长",
+                             QGAGAttachmentVariable.UserName.rawValue : "我是用户很长很长",
                              QGAGAttachmentVariable.AnchorAvatar.rawValue : "https://shp.qlogo.cn/pghead/PiajxSqBRaEIgqEVXKXHcrGsOpGYMlSichibxNemXbicavg/140",
                              QGAGAttachmentVariable.UserAvatar.rawValue : "https://shp.qlogo.cn/pghead/PiajxSqBRaELe05ZAy7Xa7bSPYf5rGfu3SWYKM2l1oY8/140"
                              ]
@@ -63,6 +63,7 @@ class ViewController: UIViewController, HWDMP4PlayDelegate {
         view.addSubview(mp4View)
         let resPath = Bundle.main.path(forResource: "gift_1344", ofType: "mp4")
         mp4View.playHWDMP4(resPath!, fps: 0, blendMode: QGHWDTextureBlendMode(rawValue: 0)!, delegate: self, attachments: attachment)
+//        mp4View.playHWDMP4(resPath!, fps: 0, blendMode: QGHWDTextureBlendMode(rawValue: 0)!, delegate: self)
     }
     
     func viewDidFinishPlayMP4(_ totalFrameCount: Int, view container: UIView!) {
