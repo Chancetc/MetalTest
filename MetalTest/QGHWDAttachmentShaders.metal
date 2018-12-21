@@ -73,5 +73,6 @@ fragment float4 hwdAttachment_fragmentShader_srcMix(HWDAttachmentRasterizerData 
     float4 mask = maskTexture.sample(textureSampler, input.maskTextureCoordinate);
     float2 blend = float2(1.0-mask.a, mask.a);
     float4 color = source*blend.x+mask*blend.y;
-    return float4(color.rgb, step(0.05, mask.a)*color.a);
+    float alpha = params[0].alpha;
+    return float4(color.rgb, step(0.01, mask.a)*alpha);
 }
