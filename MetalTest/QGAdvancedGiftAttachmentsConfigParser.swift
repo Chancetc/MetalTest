@@ -102,7 +102,7 @@ class QGAdvancedGiftAttachmentsConfigParser: NSObject {
                 paragraphStyle.alignment = .center
                 paragraphStyle.lineBreakMode = .byTruncatingTail
                 let attrs = [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: paragraphStyle,NSAttributedString.Key.foregroundColor: color]
-                UIGraphicsBeginImageContext(rect.size)
+                UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.main.scale)
                 textStr.draw(with: CGRect(x: 0, y: 0, width: width, height: height), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
                 guard let img = UIGraphicsGetImageFromCurrentImageContext() else {
                     completionBlock(false)
