@@ -291,23 +291,10 @@ extension QGHWDMetalRenderer {
     
     static func loadTexture(image: UIImage) throws -> MTLTexture? {
         
-        let textureLoader = MTKTextureLoader(device: QGHWDMetalRenderer.device)
-        let textureLoaderOptions: [MTKTextureLoader.Option: Any] =
-            [.origin: MTKTextureLoader.Origin.bottomLeft,
-             .SRGB: false,
-             .generateMipmaps: NSNumber(booleanLiteral: true)]
-        guard let cgImage = image.cgImage else { return nil }
-        let texture = try textureLoader.newTexture(cgImage: cgImage, options: textureLoaderOptions)
-        return texture
+        return image.texture(for: image, with: QGHWDMetalRenderer.device)
     }
     
     static func loadTexture(imageName: String) throws -> MTLTexture? {
-        
-        let textureLoader = MTKTextureLoader(device: QGHWDMetalRenderer.device)
-        let textureLoaderOptions: [MTKTextureLoader.Option: Any] =
-            [.origin: MTKTextureLoader.Origin.bottomLeft,
-             .SRGB: false,
-             .generateMipmaps: NSNumber(booleanLiteral: true)]
         
         let fileExtension =
             URL(fileURLWithPath: imageName).pathExtension.isEmpty ?
@@ -316,12 +303,9 @@ extension QGHWDMetalRenderer {
         guard let url = Bundle.main.url(forResource: imageName,
                                         withExtension: fileExtension)
             else {
-                return try textureLoader.newTexture(name: imageName, scaleFactor: 1.0,
-                                                    bundle: Bundle.main, options: nil)
+                return nil
         }
         
-        let texture = try textureLoader.newTexture(URL: url,
-                                                   options: textureLoaderOptions)
-        return texture
+        return nil
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6320C04321CCC8B0008BC4EE /* UIImage+MTL.m in Sources */ = {isa = PBXBuildFile; fileRef = 6320C04221CCC8B0008BC4EE /* UIImage+MTL.m */; };
 		634511B621C7476E00509874 /* YYDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6345110721C7476E00509874 /* YYDiskCache.m */; };
 		634511B721C7476E00509874 /* YYCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6345110921C7476E00509874 /* YYCache.m */; };
 		634511B821C7476E00509874 /* YYKVStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6345110D21C7476E00509874 /* YYKVStorage.m */; };
@@ -136,6 +137,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6320C04121CCC8B0008BC4EE /* UIImage+MTL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+MTL.h"; sourceTree = "<group>"; };
+		6320C04221CCC8B0008BC4EE /* UIImage+MTL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MTL.m"; sourceTree = "<group>"; };
 		6345110721C7476E00509874 /* YYDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYDiskCache.m; sourceTree = "<group>"; };
 		6345110821C7476E00509874 /* YYKVStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYKVStorage.h; sourceTree = "<group>"; };
 		6345110921C7476E00509874 /* YYCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYCache.m; sourceTree = "<group>"; };
@@ -456,6 +459,8 @@
 				6345112521C7476E00509874 /* UIImageView+YYWebImage.m */,
 				6345112621C7476E00509874 /* MKAnnotationView+YYWebImage.m */,
 				6345112721C7476E00509874 /* CALayer+YYWebImage.m */,
+				6320C04121CCC8B0008BC4EE /* UIImage+MTL.h */,
+				6320C04221CCC8B0008BC4EE /* UIImage+MTL.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -1001,6 +1006,7 @@
 				634511EB21C7476E00509874 /* NSArray+YYAdd.m in Sources */,
 				6345120821C749A800509874 /* QGAdvancedGiftAttachmentsConfigParser.swift in Sources */,
 				634511C921C7476E00509874 /* YYTextView.m in Sources */,
+				6320C04321CCC8B0008BC4EE /* UIImage+MTL.m in Sources */,
 				634511BA21C7476E00509874 /* YYImageCache.m in Sources */,
 				BD7F2E8921C264AF000F438A /* QGBaseAnimatedImageFrame+Displaying.m in Sources */,
 				634511F221C7476E00509874 /* NSTimer+YYAdd.m in Sources */,
@@ -1091,7 +1097,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1147,7 +1153,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

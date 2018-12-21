@@ -36,16 +36,15 @@ vertex HWDRasterizerData hwd_vertexShader(uint vertexID [[ vertex_id ]], constan
 }
 
 fragment float4 hwd_yuvFragmentShader(HWDRasterizerData input [[ stage_in ]],
-                                      array<texture2d<float>, QGHWDNumTextureArguments> textures [[ texture(0) ]],
+                                      texture2d<float>  lumaTexture [[ texture(0) ]],
+                                      texture2d<float>  chromaTexture [[ texture(1) ]],
                                       constant ColorParameters *colorParameters [[ buffer(0) ]]) {
     
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-    texture2d<float> texture_luma = textures[QGHWDYUVFragmentTextureIndexLuma];
-    texture2d<float> texture_chroma = textures[QGHWDYUVFragmentTextureIndexChroma];
     matrix_float3x3 rotationMatrix = colorParameters[0].matrix;
     float2 offset = colorParameters[0].offset;
-    float3 color = RGBColorFromYuvTextures(textureSampler, input.textureColorCoordinate, texture_luma, texture_chroma, rotationMatrix, offset);
-    float3 alpha = RGBColorFromYuvTextures(textureSampler, input.textureAlphaCoordinate, texture_luma, texture_chroma, rotationMatrix, offset);
+    float3 color = RGBColorFromYuvTextures(textureSampler, input.textureColorCoordinate, lumaTexture, chromaTexture, rotationMatrix, offset);
+    float3 alpha = RGBColorFromYuvTextures(textureSampler, input.textureAlphaCoordinate, lumaTexture, chromaTexture, rotationMatrix, offset);
     return float4(color ,alpha.r);
 }
 

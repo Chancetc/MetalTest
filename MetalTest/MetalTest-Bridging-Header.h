@@ -12,5 +12,6 @@
 #import "QGHWDShaderTypes.h"
 #import "UIView+MP4HWDecode.h"
 #import "YYKit.h"
+#import "UIImage+MTL.h"
 
 #endif /* MetalTest_Bridging_Header_h */

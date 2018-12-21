@@ -97,15 +97,18 @@ class QGAdvancedGiftAttachmentsConfigParser: NSObject {
                 
                 let width = CGFloat(source.width/2.0), height = CGFloat(source.height/2.0)
                 let rect = CGRect(x: 0, y: 0, width: width, height: height)
-                let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height))
                 let font =  getFontForString(NSString.init(string: textStr), fitIn: rect, designedFontSize: height*0.8, isBold: (source.style == QGAGAttachmentSourceStyle.BoldText))
-                let img = renderer.image { ctx in
-                    let paragraphStyle = NSMutableParagraphStyle()
-                    paragraphStyle.alignment = .center
-                    paragraphStyle.lineBreakMode = .byTruncatingTail
-                    let attrs = [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: paragraphStyle,NSAttributedString.Key.foregroundColor: color]
-                    textStr.draw(with: CGRect(x: 0, y: 0, width: width, height: height), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.alignment = .center
+                paragraphStyle.lineBreakMode = .byTruncatingTail
+                let attrs = [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: paragraphStyle,NSAttributedString.Key.foregroundColor: color]
+                UIGraphicsBeginImageContext(rect.size)
+                textStr.draw(with: CGRect(x: 0, y: 0, width: width, height: height), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                guard let img = UIGraphicsGetImageFromCurrentImageContext() else {
+                    completionBlock(false)
+                    return
                 }
+                UIGraphicsEndImageContext()
                 source.sourceImage = img
             }
         }
