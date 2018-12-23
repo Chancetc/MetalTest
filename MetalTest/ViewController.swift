@@ -48,8 +48,6 @@ class ViewController: UIViewController, HWDMP4PlayDelegate {
                 }
             }
         }
-        
-        
     }
     
     @objc func tapMP4View() {

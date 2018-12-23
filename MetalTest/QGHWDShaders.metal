@@ -39,7 +39,7 @@ fragment float4 hwd_yuvFragmentShader(HWDRasterizerData input [[ stage_in ]],
                                       texture2d<float>  lumaTexture [[ texture(0) ]],
                                       texture2d<float>  chromaTexture [[ texture(1) ]],
                                       constant ColorParameters *colorParameters [[ buffer(0) ]]) {
-    
+    //signifies that an expression may be computed at compile-time rather than runtime
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
     matrix_float3x3 rotationMatrix = colorParameters[0].matrix;
     float2 offset = colorParameters[0].offset;
