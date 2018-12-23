@@ -282,8 +282,7 @@ extension QGHWDMetalRenderer {
                                                                0,
                                                                &textureRef)
         
-        if(status == kCVReturnSuccess)
-        {
+        if(status == kCVReturnSuccess) {
             texture = CVMetalTextureGetTexture(textureRef!)
         }
         return texture
@@ -291,21 +290,27 @@ extension QGHWDMetalRenderer {
     
     static func loadTexture(image: UIImage) throws -> MTLTexture? {
         
-        return image.texture(for: image, with: QGHWDMetalRenderer.device)
-    }
-    
-    static func loadTexture(imageName: String) throws -> MTLTexture? {
-        
-        let fileExtension =
-            URL(fileURLWithPath: imageName).pathExtension.isEmpty ?
-                "png" : nil
-        
-        guard let url = Bundle.main.url(forResource: imageName,
-                                        withExtension: fileExtension)
-            else {
-                return nil
+        guard let imageRef = image.cgImage else { return nil }
+        let width = imageRef.width, height = imageRef.height
+        let bytesPerPixel = 4, bytesPerRow = bytesPerPixel * width, bitsPerComponent = 8
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let rawData = calloc(height * width * bytesPerPixel, MemoryLayout<UInt8>.stride) else {
+            return nil
         }
-        
-        return nil
+        guard let context = CGContext(data: rawData, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue|CGBitmapInfo.byteOrder32Big.rawValue) else {
+            return nil
+        }
+        context.translateBy(x: 0, y: CGFloat(height))
+        context.scaleBy(x: 1, y: -1)
+        context.draw(imageRef, in: CGRect(x: 0, y: 0, width: width, height: height))
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.rgba8Unorm, width: width, height: height, mipmapped: false)
+        guard let texture = QGHWDMetalRenderer.device.makeTexture(descriptor: textureDescriptor) else {
+            return nil
+        }
+        let region = MTLRegion(origin: MTLOriginMake(0, 0, 0), size: MTLSizeMake(width, height, 1))
+        texture.replace(region: region, mipmapLevel: 0, withBytes: rawData, bytesPerRow: bytesPerRow)
+        free(rawData)
+    
+        return texture
     }
 }

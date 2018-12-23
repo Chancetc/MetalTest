@@ -11,6 +11,11 @@
 
 #import <simd/simd.h>
 
+#define MODULE_AE_HWD @"MODULE_AE_HWD"
+#define HWD_Event(module, format, ...) NSLog([NSString stringWithFormat:@"[Event]:%@, %@", module, format], ##__VA_ARGS__);
+#define HWD_Info(module, format, ...) NSLog([NSString stringWithFormat:@"[Info]:%@, %@", module, format], ##__VA_ARGS__);
+#define HWD_Error(module, format, ...) NSLog([NSString stringWithFormat:@"[Error]:%@, %@", module, format], ##__VA_ARGS__);
+
 typedef struct {
     
     packed_float4 position;

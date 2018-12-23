@@ -11,6 +11,7 @@
 
 @implementation UIImage (MTL)
 
+//http://metalbyexample.com/textures-and-samplers/
 - (id<MTLTexture>)textureForImage:(UIImage *)image withDevice:(id<MTLDevice>)device {
     
     CGImageRef imageRef = [image CGImage];

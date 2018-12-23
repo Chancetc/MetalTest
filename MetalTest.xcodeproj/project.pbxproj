@@ -1172,8 +1172,8 @@
 				DEVELOPMENT_TEAM = 6W55574XBS;
 				INFOPLIST_FILE = MetalTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
 					"@executable_path/Frameworks",
+					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.MetalTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1190,8 +1190,8 @@
 				DEVELOPMENT_TEAM = 6W55574XBS;
 				INFOPLIST_FILE = MetalTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
 					"@executable_path/Frameworks",
+					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.MetalTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
