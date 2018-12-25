@@ -172,7 +172,7 @@ class QGHWDMetalRenderer: NSObject {
         return attachmentPipelineState
     }
     
-    func render(pixelBuffer: CVPixelBuffer?, metalLayer:CAMetalLayer?, attachment: QGAdvancedGiftAttachmentsFrameModel?) {
+    func render(pixelBuffer: CVPixelBuffer?, metalLayer:CAMetalLayer?, attachment: QGAdvancedGiftAttachmentsFrameModel?, config: QGAdvancedGiftAttachmentsConfigModel?) {
         
         guard let pixelBuffer = pixelBuffer else { return }
         var yTextureRef: CVMetalTexture?
@@ -212,13 +212,13 @@ class QGHWDMetalRenderer: NSObject {
         renderEncoder.setFragmentTexture(yTexture!, index: Int(QGHWDYUVFragmentTextureIndexLuma.rawValue))
         renderEncoder.setFragmentTexture(uvTexture!, index: Int(QGHWDYUVFragmentTextureIndexChroma.rawValue))
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
-        drawAttachments(attachment: attachment, renderEncoder: renderEncoder, metalLayer: metalLayer!)
+        drawAttachments(attachment: attachment, renderEncoder: renderEncoder, metalLayer: metalLayer!, config: config)
         renderEncoder.endEncoding()
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
     
-    func drawAttachments(attachment: QGAdvancedGiftAttachmentsFrameModel?, renderEncoder: MTLRenderCommandEncoder?, metalLayer:CAMetalLayer) {
+    func drawAttachments(attachment: QGAdvancedGiftAttachmentsFrameModel?, renderEncoder: MTLRenderCommandEncoder?, metalLayer:CAMetalLayer, config: QGAdvancedGiftAttachmentsConfigModel?) {
         
         guard let attachment = attachment, let renderEncoder = renderEncoder else { return }
         guard attachment.attachments.count > 0 else {
@@ -227,6 +227,12 @@ class QGHWDMetalRenderer: NSObject {
         
         for attachmentModel in attachment.attachments {
             let model = QGHWDAttachmentNode(device: QGHWDMetalRenderer.device, model: attachmentModel, frameIndex:attachment.index)
+            
+            if let config = config {
+                model.containerHeight = config.height
+                model.containerWidth = config.width
+            }
+            
             guard let sourcePipelinState = attachmentPipelineStateForMaskType(attachmentModel.maskModel.maskType, metalLayer: metalLayer) else {
                 continue
             }

@@ -37,6 +37,9 @@ extension float2x4 {
 
 class QGHWDAttachmentNode: NSObject {
     
+    var containerWidth: Float!
+    var containerHeight: Float!
+    
     var model: QGAdvancedGiftAttachmentModel!
     var frameIndex: Int!
     
@@ -49,6 +52,12 @@ class QGHWDAttachmentNode: NSObject {
     }
     var vertexCount: Int {
         return 4
+    }
+    
+    override init() {
+        super.init()
+        containerHeight = 0.0
+        containerWidth = 0.0
     }
     
     var maskTexture: MTLTexture? {
@@ -70,8 +79,7 @@ class QGHWDAttachmentNode: NSObject {
     
     var vertices: [Float] {
         
-        let containerWidth: Float = 752.0
-        let containerHeight: Float = 1344.0
+        guard containerHeight > 0, containerWidth > 0 else { return attachmentOriginVertices }
         let originX = -1+2*Float(origin.x)/containerWidth
         let originY = 1-2*Float(origin.y)/containerHeight
         let width = 2*Float(size.width)/containerWidth
@@ -126,10 +134,6 @@ class QGHWDAttachmentNode: NSObject {
             return nil
         }
         return buffer
-    }
-    
-    override init() {
-        super.init()
     }
     
     convenience init(device: MTLDevice, model: QGAdvancedGiftAttachmentModel, frameIndex:Int) {

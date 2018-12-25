@@ -91,6 +91,9 @@
 		6345120621C7476E00509874 /* YYReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 634511B421C7476E00509874 /* YYReachability.m */; };
 		6345120821C749A800509874 /* QGAdvancedGiftAttachmentsConfigParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6345120721C749A800509874 /* QGAdvancedGiftAttachmentsConfigParser.swift */; };
 		6345120A21C749F600509874 /* QGAdvancedGiftAttachmentsConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6345120921C749F600509874 /* QGAdvancedGiftAttachmentsConfigModel.swift */; };
+		639819B221D2541A002755C3 /* gift_1345.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 639819B121D2541A002755C3 /* gift_1345.mp4 */; };
+		639819B521D258C5002755C3 /* textUserMask2.png in Resources */ = {isa = PBXBuildFile; fileRef = 639819B321D258C4002755C3 /* textUserMask2.png */; };
+		639819B621D258C5002755C3 /* textUserMask1.png in Resources */ = {isa = PBXBuildFile; fileRef = 639819B421D258C5002755C3 /* textUserMask1.png */; };
 		63F232C721C9EB5500EFD5C2 /* QGHWDAttachmentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F232C621C9EB5500EFD5C2 /* QGHWDAttachmentNode.swift */; };
 		63F232C921CA1B9100EFD5C2 /* QGHWDAttachmentShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 63F232C821CA1B9100EFD5C2 /* QGHWDAttachmentShaders.metal */; };
 		BD7F2DE821C1377F000F438A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F2DE721C1377F000F438A /* AppDelegate.swift */; };
@@ -305,6 +308,9 @@
 		634511B521C7476E00509874 /* YYSentinel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYSentinel.h; sourceTree = "<group>"; };
 		6345120721C749A800509874 /* QGAdvancedGiftAttachmentsConfigParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGAdvancedGiftAttachmentsConfigParser.swift; sourceTree = "<group>"; };
 		6345120921C749F600509874 /* QGAdvancedGiftAttachmentsConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGAdvancedGiftAttachmentsConfigModel.swift; sourceTree = "<group>"; };
+		639819B121D2541A002755C3 /* gift_1345.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = gift_1345.mp4; sourceTree = "<group>"; };
+		639819B321D258C4002755C3 /* textUserMask2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = textUserMask2.png; sourceTree = "<group>"; };
+		639819B421D258C5002755C3 /* textUserMask1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = textUserMask1.png; sourceTree = "<group>"; };
 		63F232C621C9EB5500EFD5C2 /* QGHWDAttachmentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QGHWDAttachmentNode.swift; sourceTree = "<group>"; };
 		63F232C821CA1B9100EFD5C2 /* QGHWDAttachmentShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = QGHWDAttachmentShaders.metal; sourceTree = "<group>"; };
 		BD7F2DE421C1377F000F438A /* MetalTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -816,6 +822,9 @@
 		BD7F2EAF21C3B4A9000F438A /* 752_1344 */ = {
 			isa = PBXGroup;
 			children = (
+				639819B421D258C5002755C3 /* textUserMask1.png */,
+				639819B321D258C4002755C3 /* textUserMask2.png */,
+				639819B121D2541A002755C3 /* gift_1345.mp4 */,
 				BD7F2EB021C3B4A9000F438A /* imgUserMask.png */,
 				BD7F2EB121C3B4A9000F438A /* textUserMask.png */,
 				BD7F2EB221C3B4A9000F438A /* data.json */,
@@ -884,10 +893,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				639819B521D258C5002755C3 /* textUserMask2.png in Resources */,
 				BD7F2EBA21C3B4A9000F438A /* imgAnchorMask.png in Resources */,
 				BD7F2EB821C3B4A9000F438A /* data.json in Resources */,
 				BD7F2EB921C3B4A9000F438A /* textAnchorMask.png in Resources */,
 				BD7F2E9A21C2657C000F438A /* test.webp in Resources */,
+				639819B221D2541A002755C3 /* gift_1345.mp4 in Resources */,
 				BD7F2E0621C23B89000F438A /* 31.png in Resources */,
 				BD7F2E9921C2657C000F438A /* test.mp4 in Resources */,
 				BD7F2E9B21C2657C000F438A /* test.png in Resources */,
@@ -897,6 +908,7 @@
 				BD7F2DEF21C13782000F438A /* Assets.xcassets in Resources */,
 				BD7F2EBD21C3B595000F438A /* bg.PNG in Resources */,
 				BD7F2EB721C3B4A9000F438A /* textUserMask.png in Resources */,
+				639819B621D258C5002755C3 /* textUserMask1.png in Resources */,
 				BD7F2DED21C1377F000F438A /* Main.storyboard in Resources */,
 				BD7F2EB621C3B4A9000F438A /* imgUserMask.png in Resources */,
 				BD7F2EBB21C3B4A9000F438A /* gift_1344.mp4 in Resources */,

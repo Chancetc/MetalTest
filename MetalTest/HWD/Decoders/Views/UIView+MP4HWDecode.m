@@ -202,7 +202,7 @@ NSInteger const QGMP4HWDMaxFPS = 60;
             //QG_Debug(MODULE_DECODE, @"display frame:%@, has frameBuffer:%@",@(nextIndex),@(nextFrame.pixelBuffer != nil));
 //            [self.HWDOpenGLView displayPixelBuffer:nextFrame.pixelBuffer];
             QGAdvancedGiftAttachmentsFrameModel *attachment = self.attachmentsModel.frames[@(nextFrame.frameIndex)];
-            [self.HWDMetalView displayWithPixelBuffer:nextFrame.pixelBuffer attachment:attachment];
+            [self.HWDMetalView displayWithPixelBuffer:nextFrame.pixelBuffer attachment:attachment config:self.attachmentsModel];
 //            [self.HWDMetalView displayWithImageName:@"31"];
             self.currentHWDFrameInstance = nextFrame;
             

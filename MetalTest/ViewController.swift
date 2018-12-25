@@ -59,7 +59,7 @@ class ViewController: UIViewController, HWDMP4PlayDelegate {
         guard let attachment = attachConfig else { return }
         mp4View = UIView(frame: view.bounds)
         view.addSubview(mp4View)
-        let resPath = Bundle.main.path(forResource: "gift_1344", ofType: "mp4")
+        let resPath = Bundle.main.path(forResource: "gift_1345", ofType: "mp4")
         mp4View.playHWDMP4(resPath!, fps: 0, blendMode: QGHWDTextureBlendMode(rawValue: 0)!, delegate: self, attachments: attachment)
 //        mp4View.playHWDMP4(resPath!, fps: 0, blendMode: QGHWDTextureBlendMode(rawValue: 0)!, delegate: self)
     }
