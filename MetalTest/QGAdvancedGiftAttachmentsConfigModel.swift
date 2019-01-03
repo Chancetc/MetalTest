@@ -387,7 +387,6 @@ class QGAdvancedGiftAttachmentsConfigModel: NSObject {
                 attachModel.maskModel = maskModel
             }
         }
-        
         for frameIndex in invalidFrames {
             frames.removeValue(forKey: frameIndex)
         }
