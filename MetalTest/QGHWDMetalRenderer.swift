@@ -70,19 +70,13 @@ class QGHWDMetalRenderer: NSObject {
     // - MARK: CONSTANTS
     let hwdVertexFunctionName = "hwd_vertexShader"
     let hwdYUVFragmentFunctionName = "hwd_yuvFragmentShader"
-    let hwdYUV2RGBComputeFunctionName = "hwd_yuvToRGB"
-    
 
     // - MARK: VARS
     static var device: MTLDevice!
     var blendMode: QGHWDTextureBlendMode
-    var pixelBufferRGBTexture: MTLTexture?
-    
     var vertexBuffer: MTLBuffer!
     var yuvMatrixBuffer: MTLBuffer!
     var pipelineState: MTLRenderPipelineState! //This will keep track of the compiled render pipeline you’re about to create.
-    var yuv2rgbComputePipelineState: MTLComputePipelineState?
-    
     
     var attachmentSourcePipelineStates: [QGAGAttachmentMaskType: MTLRenderPipelineState] = [QGAGAttachmentMaskType: MTLRenderPipelineState]()
     
@@ -113,20 +107,6 @@ class QGHWDMetalRenderer: NSObject {
         yuvMatrixBuffer = QGHWDMetalRenderer.device.makeBuffer(bytes: yuvMatrixs, length: yuvMatrixsDataSize, options: [])
     }
     
-    func setupPixelBufferRGBTexture(_ width:Int, height: Int) {
-        
-        let textureDescriptor = MTLTextureDescriptor()
-        textureDescriptor.width = width
-        textureDescriptor.height = height
-        textureDescriptor.pixelFormat = .bgra8Unorm
-        if #available(iOS 9.0, *) {
-            textureDescriptor.usage = MTLTextureUsage(rawValue: MTLTextureUsage.shaderRead.rawValue | MTLTextureUsage.shaderWrite.rawValue)
-        } else {
-            // Fallback on earlier versions
-        }
-        pixelBufferRGBTexture = QGHWDMetalRenderer.device.makeTexture(descriptor: textureDescriptor)
-    }
-    
     func setupPipelineStates(_ metalLayer: CAMetalLayer) {
         
         guard let defaultLibrary = QGHWDMetalRenderer.device.makeDefaultLibrary() else {
@@ -145,11 +125,6 @@ class QGHWDMetalRenderer: NSObject {
         let err = CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, QGHWDMetalRenderer.device, nil, &videoTextureCache)
         guard err == noErr else {
             return
-        }
-        
-        //compute pipeline
-        if let yuv2rgbProgram = defaultLibrary.makeFunction(name: hwdYUV2RGBComputeFunctionName) {
-            yuv2rgbComputePipelineState = try? QGHWDMetalRenderer.device.makeComputePipelineState(function: yuv2rgbProgram)
         }
         
         _ = attachmentPipelineStateForMaskType(.SrceIn, metalLayer: metalLayer)
@@ -218,50 +193,24 @@ class QGHWDMetalRenderer: NSObject {
         
         let yTexture = CVMetalTextureGetTexture(yTextureRef!)
         let uvTexture = CVMetalTextureGetTexture(uvTextureRef!)
-
+        
         guard yTexture != nil && uvTexture != nil && metalLayer != nil else {
             //no texture content
             return
         }
-        
-        guard let commandBuffer = commandQueue.makeCommandBuffer() else {
-            return
-        }
-        
-        //compute task
-        guard let computeEncoder = commandBuffer.makeComputeCommandEncoder(), let yuv2rgbComputePipelineState = yuv2rgbComputePipelineState else {
-            return
-        }
-        
-        if pixelBufferRGBTexture == nil || pixelBufferRGBTexture?.width != yWidth || pixelBufferRGBTexture?.height != yHeight {
-            setupPixelBufferRGBTexture(yWidth, height: yHeight)
-        }
-        
-        guard let pixelBufferRGBTexture = pixelBufferRGBTexture else { return }
-        
-        // compute pass
-        computeEncoder.setComputePipelineState(yuv2rgbComputePipelineState)
-        computeEncoder.setTexture(yTexture, index: 0)
-        computeEncoder.setTexture(uvTexture, index: 1)
-        computeEncoder.setTexture(pixelBufferRGBTexture, index: 2)
-        computeEncoder.setBuffer(yuvMatrixBuffer, offset: 0, index: 0)
-        let width = pixelBufferRGBTexture.width
-        let height = pixelBufferRGBTexture.height
-        let threadgroupSize = MTLSizeMake(16, 16, 1)
-        let threadgroupCount = MTLSizeMake((width  + threadgroupSize.width -  1) / threadgroupSize.width, (height + threadgroupSize.height - 1) / threadgroupSize.height, 1)
-        computeEncoder.dispatchThreadgroups(threadgroupCount, threadsPerThreadgroup: threadgroupSize)
-        computeEncoder.endEncoding()
         
         guard let drawable = metalLayer?.nextDrawable() else { return }
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture //which returns the texture in which you need to draw in order for something to appear on the screen.
         renderPassDescriptor.colorAttachments[0].loadAction = .clear //“set the texture to the clear color before doing any drawing,”
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        let commandBuffer = commandQueue.makeCommandBuffer()!
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         renderEncoder.setRenderPipelineState(pipelineState)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.setFragmentBuffer(yuvMatrixBuffer, offset: 0, index: 0)
-        renderEncoder.setFragmentTexture(pixelBufferRGBTexture, index: 0)
+        renderEncoder.setFragmentTexture(yTexture!, index: Int(QGHWDYUVFragmentTextureIndexLuma.rawValue))
+        renderEncoder.setFragmentTexture(uvTexture!, index: Int(QGHWDYUVFragmentTextureIndexChroma.rawValue))
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
         drawAttachments(attachment: attachment, renderEncoder: renderEncoder, metalLayer: metalLayer!, config: config)
         renderEncoder.endEncoding()
