@@ -53,6 +53,8 @@ class QGAdvancedGiftAttachmentsSourceModel: NSObject {
     var fitType: QGAGAttachmentFitType = .FitXY
     var sourceType: QGAGAttachmentSourceType = .TextStr
     var sourceImage: UIImage!
+    var _sourceTexture: MTLTexture?
+    
     
     override init() {
         super.init()
@@ -71,6 +73,14 @@ class QGAdvancedGiftAttachmentsSourceModel: NSObject {
         sourceType = sourceTypeOfSource
         self.color = color
         self.style = style
+    }
+    
+    var sourceTexture: MTLTexture? {
+        
+        if _sourceTexture == nil, let texture = try? QGHWDMetalRenderer.loadTexture(image: sourceImage) {
+            _sourceTexture = texture
+        }
+        return _sourceTexture
     }
 }
 
@@ -139,7 +149,8 @@ class QGAdvancedGiftAttachmentsMaskModel: NSObject {
         
         guard let maskFrameModel = maskFrames[index] else { return nil }
         guard let totalMask = UIImage(named: maskName) else { return nil }
-        let clippedRect = CGRect(origin: maskFrameModel.origin, size: maskFrameModel.size)
+        var clippedRect = CGRect(origin: maskFrameModel.origin, size: maskFrameModel.size)
+        clippedRect = CGRect(x: clippedRect.origin.x+2, y: clippedRect.origin.y+2, width: clippedRect.size.width-4, height: clippedRect.size.height-4)
         guard let cgImage = totalMask.cgImage else { return nil }
         guard let imageRef = cgImage.cropping(to: clippedRect) else { return nil }
         let image = UIImage(cgImage: imageRef, scale: totalMask.scale, orientation: totalMask.imageOrientation)

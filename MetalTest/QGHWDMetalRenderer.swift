@@ -237,28 +237,17 @@ class QGHWDMetalRenderer: NSObject {
                 continue
             }
             renderEncoder.setRenderPipelineState(sourcePipelinState)
-            guard let sourceTexture = model.sourceTexture,
-                let maskTexture = model.maskTexture,
+            guard let sourceTexture = model.model.sourceModel.sourceTexture,
                 let vertexBuffer = model.vertexBuffer,
                 let fragmentBuffer = model.attachmentParamsBuffer else {
                 continue
             }
             
-            if attachmentModel.maskModel.maskType == .SrcOut {
-                
-                renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-                renderEncoder.setFragmentBuffer(fragmentBuffer, offset: 0, index: 0)
-                renderEncoder.setFragmentTexture(yTexture, index: 0)
-                renderEncoder.setFragmentTexture(uvTexture, index: 1)
-                renderEncoder.setFragmentTexture(sourceTexture, index: 2)
-                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: model.vertexCount, instanceCount: 1)
-                continue
-            }
-            
             renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
             renderEncoder.setFragmentBuffer(fragmentBuffer, offset: 0, index: 0)
-            renderEncoder.setFragmentTexture(sourceTexture, index: 0)
-            renderEncoder.setFragmentTexture(maskTexture, index: 1)
+            renderEncoder.setFragmentTexture(yTexture, index: 0)
+            renderEncoder.setFragmentTexture(uvTexture, index: 1)
+            renderEncoder.setFragmentTexture(sourceTexture, index: 2)
             renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: model.vertexCount, instanceCount: 1)
         }
     }

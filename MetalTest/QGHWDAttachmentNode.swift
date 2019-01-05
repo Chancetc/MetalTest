@@ -43,6 +43,9 @@ class QGHWDAttachmentNode: NSObject {
     var model: QGAdvancedGiftAttachmentModel!
     var frameIndex: Int!
     
+    var _sourceTexture: MTLTexture?
+    
+    
     var device: MTLDevice!
     var size: CGSize {
         return model.size
@@ -65,14 +68,6 @@ class QGHWDAttachmentNode: NSObject {
             if let texture = try? QGHWDMetalRenderer.loadTexture(image: maskImage) {
                 return texture
             }
-        }
-        return nil
-    }
-    
-    var sourceTexture: MTLTexture? {
-        
-        if let texture = try? QGHWDMetalRenderer.loadTexture(image: model.sourceModel.sourceImage) {
-            return texture
         }
         return nil
     }
