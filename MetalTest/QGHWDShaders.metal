@@ -47,5 +47,3 @@ fragment float4 hwd_yuvFragmentShader(HWDRasterizerData input [[ stage_in ]],
     float3 alpha = RGBColorFromYuvTextures(textureSampler, input.textureAlphaCoordinate, lumaTexture, chromaTexture, rotationMatrix, offset);
     return float4(color ,alpha.r);
 }
-
-

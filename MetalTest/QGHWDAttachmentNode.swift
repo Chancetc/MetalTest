@@ -89,13 +89,25 @@ class QGHWDAttachmentNode: NSObject {
         return vertices
     }
     
+    var maskCoordinates: [Float] {
+        
+        //todo 这里需要根据实际纹理分布来取值
+        guard containerHeight > 0, containerWidth > 0 else { return attachmentOriginVertices }
+        let orginX = Float(origin.x)/containerWidth/2.0
+        let originY = Float(origin.y)/containerHeight
+        let width = Float(size.width)/containerWidth/2.0
+        let height = Float(size.height)/containerHeight
+        let coordinates: [Float] = [orginX, originY, orginX, originY+height, orginX+width, originY, orginX+width, originY+height]
+        return coordinates
+    }
+    
     var vertexBuffer: MTLBuffer? {
         
         let colunmCountForVertices = 4
         let colunmCountForCoordinate = 2
         let vertices = self.vertices
         let sourceCoordinates = attachmentOriginTextureCoordinates
-        let maskCoordinates = attachmentOriginTextureCoordinates
+        let maskCoordinates = self.maskCoordinates
         
         var vertexData: [Float] = Array.init()
         for (index, element) in vertices.enumerated() {
@@ -128,7 +140,7 @@ class QGHWDAttachmentNode: NSObject {
             maskType = 2
         }
         let alpha = model.alpha
-        let params = [QGHWDAttachmentFragmentParameter(maskType: UInt32(maskType), alpha: alpha)]
+        let params = [QGHWDAttachmentFragmentParameter(maskType: UInt32(maskType), alpha: alpha, matrix: colorConversionMatrix601FullRangeDefault, offset: packed_float2(0.5, 0.5))]
         let paramsDataSize = params.count * MemoryLayout.size(ofValue: params[0])
         guard let buffer = device.makeBuffer(bytes: params, length: paramsDataSize, options: []) else {
             return nil

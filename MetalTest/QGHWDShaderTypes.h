@@ -39,6 +39,8 @@ struct QGHWDAttachmentFragmentParameter {
     
     uint32_t maskType;
     float alpha;
+    matrix_float3x3 matrix;
+    packed_float2 offset;
 };
 
 // Argument buffer indices shared between shader and C code to ensure Metal shader buffer

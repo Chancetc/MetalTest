@@ -212,13 +212,13 @@ class QGHWDMetalRenderer: NSObject {
         renderEncoder.setFragmentTexture(yTexture!, index: Int(QGHWDYUVFragmentTextureIndexLuma.rawValue))
         renderEncoder.setFragmentTexture(uvTexture!, index: Int(QGHWDYUVFragmentTextureIndexChroma.rawValue))
         renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount, instanceCount: 1)
-        drawAttachments(attachment: attachment, renderEncoder: renderEncoder, metalLayer: metalLayer!, config: config)
+        drawAttachments(attachment: attachment, renderEncoder: renderEncoder, metalLayer: metalLayer!, config: config, yTexture: yTexture!, uvTexture: uvTexture!)
         renderEncoder.endEncoding()
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
     
-    func drawAttachments(attachment: QGAdvancedGiftAttachmentsFrameModel?, renderEncoder: MTLRenderCommandEncoder?, metalLayer:CAMetalLayer, config: QGAdvancedGiftAttachmentsConfigModel?) {
+    func drawAttachments(attachment: QGAdvancedGiftAttachmentsFrameModel?, renderEncoder: MTLRenderCommandEncoder?, metalLayer:CAMetalLayer, config: QGAdvancedGiftAttachmentsConfigModel?, yTexture: MTLTexture, uvTexture: MTLTexture) {
         
         guard let attachment = attachment, let renderEncoder = renderEncoder else { return }
         guard attachment.attachments.count > 0 else {
@@ -241,6 +241,17 @@ class QGHWDMetalRenderer: NSObject {
                 let maskTexture = model.maskTexture,
                 let vertexBuffer = model.vertexBuffer,
                 let fragmentBuffer = model.attachmentParamsBuffer else {
+                continue
+            }
+            
+            if attachmentModel.maskModel.maskType == .SrcOut {
+                
+                renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+                renderEncoder.setFragmentBuffer(fragmentBuffer, offset: 0, index: 0)
+                renderEncoder.setFragmentTexture(yTexture, index: 0)
+                renderEncoder.setFragmentTexture(uvTexture, index: 1)
+                renderEncoder.setFragmentTexture(sourceTexture, index: 2)
+                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: model.vertexCount, instanceCount: 1)
                 continue
             }
             

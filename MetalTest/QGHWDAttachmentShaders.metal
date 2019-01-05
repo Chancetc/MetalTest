@@ -19,6 +19,14 @@ typedef struct {
     float2 maskTextureCoordinate;
 } HWDAttachmentRasterizerData;
 
+float3 RGBColorFromYuv(sampler textureSampler, float2 coordinate, texture2d<float> texture_luma, texture2d<float> texture_chroma, matrix_float3x3 rotationMatrix, float2 offset) {
+    
+    float3 color;
+    color.x = texture_luma.sample(textureSampler, coordinate).r;
+    color.yz = texture_chroma.sample(textureSampler, coordinate).rg - offset;
+    return float3(rotationMatrix * color);
+}
+
 vertex HWDAttachmentRasterizerData hwdAttachment_vertexShader(uint vertexID [[ vertex_id ]], constant QGHWDAttachmentVertex *vertexArray [[ buffer(0) ]]) {
     
     HWDAttachmentRasterizerData out;
@@ -26,17 +34,6 @@ vertex HWDAttachmentRasterizerData hwdAttachment_vertexShader(uint vertexID [[ v
     out.sourceTextureCoordinate = vertexArray[vertexID].sourceTextureCoordinate;
     out.maskTextureCoordinate =  vertexArray[vertexID].maskTextureCoordinate;
     return out;
-}
-
-fragment float4 hwdAttachment_fragmentShader(HWDAttachmentRasterizerData input [[ stage_in ]],
-                                             texture2d<float>  sourceTexture [[ texture(0) ]],
-                                             texture2d<float>  maskTexture [[ texture(1) ]],
-                                             constant QGHWDAttachmentFragmentParameter *params [[ buffer(0) ]]) {
-    
-    constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-    float4 source = sourceTexture.sample(textureSampler, input.sourceTextureCoordinate);
-    float4 mask = maskTexture.sample(textureSampler, input.maskTextureCoordinate);
-    return source+mask;
 }
 
 fragment float4 hwdAttachment_fragmentShader_srcIn(HWDAttachmentRasterizerData input [[ stage_in ]],
@@ -52,15 +49,19 @@ fragment float4 hwdAttachment_fragmentShader_srcIn(HWDAttachmentRasterizerData i
 }
 
 fragment float4 hwdAttachment_fragmentShader_srcOut(HWDAttachmentRasterizerData input [[ stage_in ]],
-                                                    texture2d<float>  sourceTexture [[ texture(0) ]],
-                                                    texture2d<float>  maskTexture [[ texture(1) ]],
-                                                    constant QGHWDAttachmentFragmentParameter *params [[ buffer(0) ]]) {
+                                                   texture2d<float>  desLumaTexture [[ texture(0) ]],
+                                                   texture2d<float>  desChromaTexture [[ texture(1) ]],
+                                                   texture2d<float>  sourceTexture [[ texture(2) ]],
+                                                   constant QGHWDAttachmentFragmentParameter *params [[ buffer(0) ]]) {
     
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
+    float2 offset = params[0].offset;
+    matrix_float3x3 rotationMatrix = params[0].matrix;
+    
+    float3 mask = RGBColorFromYuv(textureSampler, input.maskTextureCoordinate, desLumaTexture, desChromaTexture, rotationMatrix, offset);
     float4 source = sourceTexture.sample(textureSampler, input.sourceTextureCoordinate);
-    float4 mask = maskTexture.sample(textureSampler, input.maskTextureCoordinate);
     float alpha = params[0].alpha;
-    return float4(source.rgb,source.a*alpha*(1-mask.a));
+    return float4(source.rgb,source.a*alpha*mask.r);
 }
 
 fragment float4 hwdAttachment_fragmentShader_srcMix(HWDAttachmentRasterizerData input [[ stage_in ]],
